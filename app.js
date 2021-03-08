@@ -6,7 +6,7 @@ var logger = require('morgan');
 const { Client } = require('pg')
 var mqtt = require('mqtt')
 
-var client  = mqtt.connect('mqtt://brazil.thethings.network',{password: 'ttn-account-v2.DPJ83OzXhKXzVJ278Z7VGRnkT58daccikh3jJQvFaE0', username: 'greatway-test'})
+var client = mqtt.connect('mqtt://brazil.thethings.network',{password: 'ttn-account-v2.DPJ83OzXhKXzVJ278Z7VGRnkT58daccikh3jJQvFaE0', username: 'greatway-test'})
 
 client.on('connect', function () {
   client.subscribe('+/devices/+/up', function (err) {
