@@ -19,7 +19,11 @@ Array.prototype.json_vazio = function(){
 Client.prototype.ultima_mensagem_do_dispositivo = async function(dispositivo){
 	resultados_da_consulta  = await this.query("SELECT * FROM mensagens WHERE dispositivo = $1 ORDER BY data DESC LIMIT 1",[dispositivo])
 	this.end()
-	return resultados_da_consulta
+	if(resultados_da_consulta.rows.vazio()){
+		return resultados_da_consulta.rows.json_vazio()
+	}else{
+		return resultados_da_consulta.rows.primeiro()
+	}
 }
 
 function cria_conexao_com_banco(){
@@ -30,12 +34,8 @@ function cria_conexao_com_banco(){
 
 module.exports.mensagem_mais_recente_do_dispositivo = async function mensagem_mais_recente_do_dispositivo(dispositivo){
 	conexao_com_banco = cria_conexao_com_banco()
-	resultados_da_consulta = await conexao_com_banco.ultima_mensagem_do_dispositivo(dispositivo)
-	if(resultados_da_consulta.rows.vazio()){
-		return resultados_da_consulta.rows.json_vazio()
-	}else{
-		return resultados_da_consulta.rows.primeiro()
-	}
+	ultima_mensagem = await conexao_com_banco.ultima_mensagem_do_dispositivo(dispositivo)
+	return ultima_mensagem
 }
 
 
