@@ -3,14 +3,14 @@
 // Busca os itens do menu atual
 // Insere os itens do menu atual
 
-const dispositivos_callback = function(){ console.log('Dispositivos!') }
-const regioes_callback = function(){ console.log('Regiões!') }
-const eventos_callback = function(){ console.log('Eventos!') }
+const dispositivos_callback = function(){ console.log('Dispositivos!'); insere_novos_itens_na_lista('Dispositivos') }
+const regioes_callback = function(){ console.log('Regiões!'); insere_novos_itens_na_lista('Regiões') }
+const eventos_callback = function(){ console.log('Eventos!'); insere_novos_itens_na_lista('Eventos') }
 
 const mapa_de_menus = new Map([
-	["Dispositivos",{callback: dispositivos_callback,url: 'http://localhost:3000/mensagens/1'}],
-	['Regiões',{callback: regioes_callback,url: 'http://localhost:3000/mensagens/1'}],
-	['Eventos',{callback: eventos_callback,url: 'http://localhost:3000/mensagens/1'}]
+	["Dispositivos",{callback: dispositivos_callback,url: 'http://localhost:3000/dispositivos'}],
+	['Regiões',{callback: regioes_callback,url: 'http://localhost:3000/regioes'}],
+	['Eventos',{callback: eventos_callback,url: 'http://localhost:3000/eventos'}]
 ]);
 
 NodeList.prototype.primeiro = function(){
@@ -26,7 +26,6 @@ Element.prototype.recupera_nome_do_menu = function(){
 }
 
 function existe(objeto){
-	//console.log(`${objeto} === ${undefined} -> ${objeto === undefined}`)
 	if(objeto === undefined){
 		return false
 	}else{
@@ -47,22 +46,28 @@ function limpa_lista_de_itens(){
 	itens_da_lista.forEach(function(item){ item.remove() })
 }
 
-function insere_novos_itens_na_lista(nome_do_menu){
-	recupera_itens = pega_dados_do_banco(mapa_de_menus.get(nome_do_menu).url)
-	console.log(recupera_itens)
+function gera_novo_item(item){
+	novo_item_da_lista = document.createElement('li')
+	novo_item_da_lista.classList.add('list-group-item')
+	novo_item_da_lista.innerHTML = item
+	return novo_item_da_lista
 }
 
-function pega_dados_do_banco(url){
+function insere_novos_itens_na_lista(nome_do_menu){
 	var xhttp = new XMLHttpRequest()
-	xhttp.onreadystatechange  = function(){
+	lista = document.querySelector('div#lista_de_itens')
+	xhttp.onreadystatechange = function(){
 		if(this.readyState == 4 && this.status == 200){
-			console.log('Sucesso!')
+			limpa_lista_de_itens()
+			JSON.parse(this.response).forEach(function(item,index){
+				lista.appendChild(gera_novo_item(item.dispositivo))
+			})
 		}else{
 			console.log('Erro')
 		}
 	}
 
-	xhttp.open('GET',url)
+	xhttp.open('GET',mapa_de_menus.get(nome_do_menu).url)
 	xhttp.send()
 }
 
@@ -78,11 +83,7 @@ function configura_eventos_do_menu(menu,index){
 }
 
 document.addEventListener("DOMContentLoaded",(event) => {
- 
 	itens_da_lista = document.querySelectorAll('div#lista_de_itens li.list-group-item')
-	console.log(itens_da_lista)
-
 	menus_de_navegacao = document.querySelectorAll('ul.navbar-nav li.nav-item')
 	menus_de_navegacao.forEach(configura_eventos_do_menu)
-
 });
