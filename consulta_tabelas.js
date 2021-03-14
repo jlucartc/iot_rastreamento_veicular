@@ -8,8 +8,8 @@ Array.prototype.vazio = function(){
 	}
 }
 
-Array.prototype.json_vazio = function(){
-	return {}
+Array.prototype.lista_vazia = function(){
+	return []
 }
 
 async function executa_consulta(consulta,parametros){
@@ -17,7 +17,7 @@ async function executa_consulta(consulta,parametros){
 	resultados_da_consulta = await conexao_com_banco.query(consulta,parametros)
 	conexao_com_banco.end()
 	if(resultados_da_consulta.rows.vazio()){
-		return resultados_da_consulta.rows.json_vazio()
+		return resultados_da_consulta.rows.lista_vazia()
 	}else{
 		return resultados_da_consulta.rows
 	}

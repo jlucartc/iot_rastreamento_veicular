@@ -1,9 +1,12 @@
 html
 	head
 		title Rastreamento Veicular
+		link(href="leaflet/leaflet.css",rel="stylesheet")
 		link(href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css",rel="stylesheet",integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl",crossorigin="anonymous")
 		script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js",integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0",crossorigin="anonymous")
-		script(src="js/muda_lista_dos_menus.js")
+		script(src="js/prepara_elementos_da_tela.js",type="module")
+		script(src="leaflet/leaflet.js")
+		script(type="text/javascript",src="http://maps.stamen.com/js/tile.stamen.js?v1.3.0")
 	body
 		div(class="container-fluid")
 			div(class="row")
@@ -15,17 +18,16 @@ html
 								div(class="col-8")
 									ul(class="navbar-nav")
 										li(class="nav-item")
-											a(class="nav-link") Dispositivos
+											a(class="nav-link nav-dispositivos") Dispositivos
 										li(class="nav-item")
-											a(class="nav-link") Regiões
+											a(class="nav-link nav-regioes") Regiões
 										li(class="nav-item")
-											a(class="nav-link") Eventos
-			div(class="row")
-				div(class="col-2 list-group", id="lista_de_itens")
-					li(class="list-group-item") Item 1
-					li(class="list-group-item") Item 2
-					li(class="list-group-item") Item 3
-					li(class="list-group-item") Item 4
-					li(class="list-group-item") Item 5
-				div(class="col-10 mapa")
-					p Mapa
+											a(class="nav-link nav-eventos") Eventos
+			div(class="row h-100")
+				div(class="col-2 list-group px-0", id="lista_de_itens")
+					a(href="#",class="list-group-item list-group-item-action") Item 1
+					a(href="#",class="list-group-item list-group-item-action") Item 2
+					a(href="#",class="list-group-item list-group-item-action") Item 3
+					a(href="#",class="list-group-item list-group-item-action") Item 4
+					a(href="#",class="list-group-item list-group-item-action") Item 5
+				div(id="mapa",class="col-10 h-100")
