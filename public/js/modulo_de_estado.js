@@ -3,6 +3,10 @@ var regioes = new Array
 var eventos = new Array
 var dispositivos = new Array
 var data_ultima_consulta = undefined
+var ultima_posicao = undefined
+var nova_regiao = undefined
+var novo_evento = undefined
+var novo_registro = undefined
 
 function adiciona_layer(){
 	var layer = new L.StamenTileLayer("toner");
