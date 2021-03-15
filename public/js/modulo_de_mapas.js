@@ -23,11 +23,17 @@ const mapa_de_callbacks_de_click = new Map([
 	['envia-formulario-evento',Callbacks.envia_formulario_evento_click_callback],
 	['cancela-formulario-registro',Callbacks.cancela_formulario_registro_click_callback],
 	['cancela-formulario-regiao',Callbacks.cancela_formulario_regiao_click_callback],
-	['cancela-formulario-evento',Callbacks.cancela_formulario_evento_click_callback],
+	['cancela-formulario-evento',Callbacks.cancela_formulario_evento_click_callback]
 ]);
 
 const mapa_de_callbacks_de_change = new Map([
-
+	['formulario-registro-evento',formulario_registro_evento_change_callback],
+	['formulario-registro-regiao',formulario_registro_regiao_change_callback],
+	['formulario-evento-nome',formulario_evento_nome_change_callback],
+	['formulario-evento-criterio',formulario_evento_criterio_change_callback],
+	['formulario-evento-regiao',formulario_evento_regiao_change_callback],
+	['formulario-evento-mensagem',formulario_evento_mensagem_change_callback],
+	['formulario-regiao-nome',formulario_regiao_nome_change_callback]
 ]);
 
 export const mapa_de_eventos = new Map([

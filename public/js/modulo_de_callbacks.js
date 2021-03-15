@@ -463,3 +463,11 @@ export function cancela_formulario_regiao_click_callback(elemento){
 export function cancela_formulario_evento_click_callback(elemento){
 	console.log('Cancelando formulario de evento!')
 }
+
+export function formulario_registro_evento_change_callback(){}
+export function formulario_registro_regiao_change_callback(){}
+export function formulario_evento_nome_change_callback(){}
+export function formulario_evento_criterio_change_callback(){}
+export function formulario_evento_regiao_change_callback(){}
+export function formulario_evento_mensagem_change_callback(){}
+export function formulario_regiao_nome_change_callback(){}
