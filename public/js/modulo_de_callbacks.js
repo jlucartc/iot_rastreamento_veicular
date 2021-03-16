@@ -333,6 +333,17 @@ function cria_formulario_de_nova_regiao(){
 	input_do_nome.className = 'form-control'
 	input_do_nome.setAttribute('type','text')
 
+	var form_group_do_raio = document.createElement('div')
+	form_group_do_raio.className = 'form-group'
+
+	var label_do_raio = document.createElement('label')
+	label_do_raio.className = 'form-label'
+	label_do_raio.innerHTML = 'Raio da região'
+
+	var input_do_raio = document.createElement('input')
+	input_do_raio.className = 'form-control'
+	input_do_raio.setAttribute('type','text')
+
 	var div_dos_botoes = document.createElement('div')
 	div_dos_botoes.className = "container-fluid mt-3 px-0"
 
@@ -370,7 +381,11 @@ function cria_formulario_de_nova_regiao(){
 	form_group_do_nome.appendChild(label_do_nome)
 	form_group_do_nome.appendChild(input_do_nome)
 
+	form_group_do_raio.appendChild(label_do_raio)
+	form_group_do_raio.appendChild(input_do_raio)
+
 	formulario.appendChild(form_group_do_nome)
+	formulario.appendChild(form_group_do_raio)
 	formulario.appendChild(div_dos_botoes)
 
 	container_do_formulario.appendChild(titulo_do_formulario)
@@ -425,24 +440,35 @@ export function nav_registros_click_callback(elemento){
 	cria_menu_registros()
 }
 
-export function cria_evento_click_callback(elemento){ 
-	console.log('Criando novo evento!')
-	var formulario_de_evento = cria_formulario_de_novo_evento()
-	var lista_de_itens = document.querySelector('div#lista-de-itens')
-	lista_de_itens.appendChild(formulario_de_evento)
+export function cria_evento_click_callback(elemento){
+	if(Estado.formulario_de_evento === undefined){ 
+		console.log('Criando novo evento!')
+		var formulario_de_evento = cria_formulario_de_novo_evento()
+		var lista_de_itens = document.querySelector('div#lista-de-itens')
+		lista_de_itens.appendChild(formulario_de_evento)
+		Estado.set_formulario_de_evento(formulario_de_evento)
+	}
 }
 
 export function cria_regiao_click_callback(elemento){
-	console.log('Criando nova regiao!')
-	var formulario_de_regiao = cria_formulario_de_nova_regiao()
-	var lista_de_itens = document.querySelector('div#lista-de-itens')
-	lista_de_itens.appendChild(formulario_de_regiao)
+	if(Estado.formulario_de_regiao === undefined){
+		console.log('Criando nova regiao!')
+		var formulario_de_regiao = cria_formulario_de_nova_regiao()
+		var lista_de_itens = document.querySelector('div#lista-de-itens')
+		lista_de_itens.appendChild(formulario_de_regiao)
+		Estado.set_formulario_de_regiao(formulario_de_regiao)
+		Estado.toggle_flag_criando_regiao()
+	}
 }
+
 export function cria_registro_click_callback(elemento){
-	console.log('Criando novo registro!')
-	var formulario_de_registro = cria_formulario_de_novo_registro()
-	var lista_de_itens = document.querySelector('div#lista-de-itens')
-	lista_de_itens.appendChild(formulario_de_registro)
+	if(Estado.formulario_de_registro === undefined){
+		console.log('Criando novo registro!')
+		var formulario_de_registro = cria_formulario_de_novo_registro()
+		var lista_de_itens = document.querySelector('div#lista-de-itens')
+		lista_de_itens.appendChild(formulario_de_registro)
+		Estado.set_formulario_de_registro(formulario_de_registro)
+	}
 }
 
 export function envia_formulario_registro_click_callback(elemento){
@@ -456,18 +482,64 @@ export function envia_formulario_evento_click_callback(elemento){
 }
 export function cancela_formulario_registro_click_callback(elemento){
 	console.log('Cancelando formulario de registro!')
+	if(Estado.formulario_de_registro != undefined){
+		Estado.formulario_de_registro.remove()
+		Estado.set_formulario_de_registro(undefined)
+	}
 }
 export function cancela_formulario_regiao_click_callback(elemento){
 	console.log('Cancelando formulario de regiao!')
+	if(Estado.formulario_de_regiao != undefined){
+		Estado.formulario_de_regiao.remove()
+		Estado.set_formulario_de_regiao(undefined)
+		Estado.limpa_regiao()
+		Estado.toggle_flag_criando_regiao()
+	}
 }
 export function cancela_formulario_evento_click_callback(elemento){
 	console.log('Cancelando formulario de evento!')
+	if(Estado.formulario_de_evento != undefined){
+		Estado.formulario_de_evento.remove()
+		Estado.set_formulario_de_evento(undefined)
+	}
 }
 
-export function formulario_registro_evento_change_callback(){}
-export function formulario_registro_regiao_change_callback(){}
-export function formulario_evento_nome_change_callback(){}
-export function formulario_evento_criterio_change_callback(){}
-export function formulario_evento_regiao_change_callback(){}
-export function formulario_evento_mensagem_change_callback(){}
-export function formulario_regiao_nome_change_callback(){}
+export function formulario_registro_evento_change_callback(evento){
+	elemento = evento.target
+	Estado.set_evento_do_registro(elemento.value)
+}
+
+export function formulario_registro_regiao_change_callback(evento){
+	elemento = evento.target
+	Estado.set_regiao_do_registro(elemento.value)
+}
+
+export function formulario_evento_nome_change_callback(evento){
+	elemento = evento.target
+	Estado.set_nome_do_evento(elemento.value)
+}
+
+export function formulario_evento_criterio_change_callback(evento){
+	elemento = evento.target
+	Estado.set_criterio_do_evento(elemento.value)
+}
+
+export function formulario_evento_regiao_change_callback(evento){
+	elemento = evento.target
+	Estado.set_regiao_do_evento(elemento.value)
+}
+
+export function formulario_evento_mensagem_change_callback(evento){
+	elemento = evento.target
+	Estado.set_mensagem_do_evento(elemento.value)
+}
+
+export function formulario_regiao_nome_change_callback(evento){
+	elemento = evento.target
+	Estado.set_nome_da_regiao(elemento.value)
+}
+
+export function formulario_regiao_raio_change_callback(evento){
+	elemento = evento.target
+	Estado.set_raio_da_regiao(elemento.value)
+}
