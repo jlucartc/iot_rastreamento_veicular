@@ -28,12 +28,17 @@ router.get('/registros',async function(req, res, next){
 	res.json(await consulta_tabelas.lista_de_registros())
 })
 
-router.post('/cria_evento',async function(req, res, next){
+router.post('/cadastra_evento',async function(req, res, next){
 	res.json(await consulta_tabelas.cria_evento(req.body))
 })
 
-router.post('/cria_regiao',async function(req, res, next){
+router.post('/cadastra_regiao',async function(req, res, next){
+	console.log(req)
 	res.json(await consulta_tabelas.cria_regiao(req.body))
+})
+
+router.post('/cadastra_registro',async function(req, res, next){
+	res.json(await consulta_tabelas.cria_registro(req.body))
 })
 
 module.exports = router;

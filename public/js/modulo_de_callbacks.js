@@ -56,6 +56,48 @@ function centraliza_mapa_no_dispositivo(coordenada){
 	Estado.mapa.flyTo(coordenada)
 }
 
+function cadastra_regiao_no_banco(){
+	var request = new XMLHttpRequest()
+	request.onreadystatechange = function(){
+		if(this.readyState == 4 && this.status == 200){
+			console.log(`Sucesso: ${this.response}`)
+		}else{
+			console.log(`Erro: ${JSON.parse(this.response)}`)
+		}
+	}
+
+	request.open('POST','/cadastra_regiao')
+	request.send(Estado.dados_da_regiao())
+}
+
+function cadastra_registro_no_banco(){
+	var request = new XMLHttpRequest()
+	request.onreadystatechange = function(){
+		if(this.readyState == 4 && this.status == 200){
+			console.log(`Sucesso: ${JSON.parse(this.response)}`)
+		}else{
+			console.log(`Erro: ${JSON.parse(this.response)}`)
+		}
+	}
+
+	request.open('POST','/cadastra_registro')
+	request.send(Estado.dados_do_registro())
+}
+
+function cadastra_evento_no_banco(){
+	var request = new XMLHttpRequest()
+	request.onreadystatechange = function(){
+		if(this.readyState == 4 && this.status == 200){
+			console.log(`Sucesso: ${JSON.parse(this.response)}`)
+		}else{
+			console.log(`Erro: ${JSON.parse(this.response)}`)
+		}
+	}
+
+	request.open('POST','/cadastra_evento')
+	request.send(Estado.dados_do_evento())
+}
+
 function cria_menu_dispositivos(){
 	insere_novos_itens_na_lista('nav-dispositivos','lista-dispositivos')
 }
@@ -137,7 +179,7 @@ function cria_formulario_de_novo_evento(){
 	label_da_regiao.innerHTML = "Região"
 
 	var select_da_regiao = document.createElement('select')
-	select_da_regiao.className = "form-select"
+	select_da_regiao.className = "form-select formulario-evento-regiao"
 	select_da_regiao.setAttribute('name','regiao')
 	var options_da_regiao = []
 
@@ -149,7 +191,7 @@ function cria_formulario_de_novo_evento(){
 	label_do_criterio.innerHTML = 'Critério'
 
 	var select_do_criterio = document.createElement('select')
-	select_do_criterio.className = 'form-select'
+	select_do_criterio.className = 'form-select formulario-evento-criterio'
 	select_do_criterio.setAttribute('name','criterio')
 	var options_do_criterio = []
 
@@ -161,7 +203,7 @@ function cria_formulario_de_novo_evento(){
 	label_da_mensagem.innerHTML = "Mensagem"
 
 	var input_da_mensagem = document.createElement('textarea')
-	input_da_mensagem.className = "form-control"
+	input_da_mensagem.className = "form-control formulario-evento-mensagem"
 	input_da_mensagem.setAttribute('name','mensagem')
 
 	var div_dos_botoes = document.createElement('div')
@@ -244,7 +286,7 @@ function cria_formulario_de_novo_registro(){
 	label_do_evento.innerHTML = 'Evento'
 
 	var select_do_evento = document.createElement('select')
-	select_do_evento.className = "form-select"
+	select_do_evento.className = "form-select formulario-registro-evento"
 	select_do_evento.setAttribute('name','evento')
 	var options_do_evento = []
 
@@ -256,7 +298,7 @@ function cria_formulario_de_novo_registro(){
 	label_da_regiao.innerHTML = "Região"
 
 	var select_da_regiao = document.createElement('select')
-	select_da_regiao.className = "form-select"
+	select_da_regiao.className = "form-select formulario-registro-regiao"
 	select_da_regiao.setAttribute('name','regiao')
 	var options_da_regiao = []
 
@@ -330,7 +372,7 @@ function cria_formulario_de_nova_regiao(){
 	label_do_nome.innerHTML = 'Nome'
 
 	var input_do_nome = document.createElement('input')
-	input_do_nome.className = 'form-control'
+	input_do_nome.className = 'form-control formulario-regiao-nome'
 	input_do_nome.setAttribute('type','text')
 
 	var form_group_do_raio = document.createElement('div')
@@ -341,7 +383,7 @@ function cria_formulario_de_nova_regiao(){
 	label_do_raio.innerHTML = 'Raio da região'
 
 	var input_do_raio = document.createElement('input')
-	input_do_raio.className = 'form-control'
+	input_do_raio.className = 'form-control formulario-regiao-raio'
 	input_do_raio.setAttribute('type','text')
 
 	var div_dos_botoes = document.createElement('div')
@@ -367,6 +409,7 @@ function cria_formulario_de_nova_regiao(){
 	botao_de_cancelar.setAttribute('type','button')
 
 	cadastra_elemento_em_evento(input_do_nome,'change')
+	cadastra_elemento_em_evento(input_do_raio,'change')
 	cadastra_elemento_em_evento(botao_de_criar,'click')
 	cadastra_elemento_em_evento(botao_de_cancelar,'click')
 
@@ -427,16 +470,19 @@ export function nav_dispositivos_click_callback(elemento){
 
 export function nav_regioes_click_callback(elemento){
 	console.log('Regiões!')
+	Estado.reseta_flags_e_dados()
 	cria_menu_regioes()
 }
 
 export function nav_eventos_click_callback(elemento){
-	console.log('Eventos!')	
+	console.log('Eventos!')
+	Estado.reseta_flags_e_dados()
 	cria_menu_eventos()
 }
 
 export function nav_registros_click_callback(elemento){
-	console.log('Registros!')	
+	console.log('Registros!')
+	Estado.reseta_flags_e_dados()
 	cria_menu_registros()
 }
 
@@ -473,13 +519,19 @@ export function cria_registro_click_callback(elemento){
 
 export function envia_formulario_registro_click_callback(elemento){
 	console.log('Enviando formulario de registro!')
+	cadastra_registro_no_banco()
 }
+
 export function envia_formulario_regiao_click_callback(elemento){
 	console.log('Enviando formulario de regiao!')
+	cadastra_regiao_no_banco()
 }
+
 export function envia_formulario_evento_click_callback(elemento){
 	console.log('Enviando formulario de evento!')
+	cadastra_evento_no_banco()
 }
+
 export function cancela_formulario_registro_click_callback(elemento){
 	console.log('Cancelando formulario de registro!')
 	if(Estado.formulario_de_registro != undefined){
@@ -487,6 +539,7 @@ export function cancela_formulario_registro_click_callback(elemento){
 		Estado.set_formulario_de_registro(undefined)
 	}
 }
+
 export function cancela_formulario_regiao_click_callback(elemento){
 	console.log('Cancelando formulario de regiao!')
 	if(Estado.formulario_de_regiao != undefined){
@@ -496,6 +549,7 @@ export function cancela_formulario_regiao_click_callback(elemento){
 		Estado.toggle_flag_criando_regiao()
 	}
 }
+
 export function cancela_formulario_evento_click_callback(elemento){
 	console.log('Cancelando formulario de evento!')
 	if(Estado.formulario_de_evento != undefined){
@@ -504,42 +558,42 @@ export function cancela_formulario_evento_click_callback(elemento){
 	}
 }
 
-export function formulario_registro_evento_change_callback(evento){
-	elemento = evento.target
+export function formulario_registro_evento_change_callback(elemento){
+	console.log('Mudou evento do registro!')
 	Estado.set_evento_do_registro(elemento.value)
 }
 
-export function formulario_registro_regiao_change_callback(evento){
-	elemento = evento.target
+export function formulario_registro_regiao_change_callback(elemento){
+	console.log('Mudou regiao do registro')
 	Estado.set_regiao_do_registro(elemento.value)
 }
 
-export function formulario_evento_nome_change_callback(evento){
-	elemento = evento.target
+export function formulario_evento_nome_change_callback(elemento){
+	console.log('Mudou nome do evento!')
 	Estado.set_nome_do_evento(elemento.value)
 }
 
-export function formulario_evento_criterio_change_callback(evento){
-	elemento = evento.target
+export function formulario_evento_criterio_change_callback(elemento){
+	console.log('Mudou criterio do evento!')
 	Estado.set_criterio_do_evento(elemento.value)
 }
 
-export function formulario_evento_regiao_change_callback(evento){
-	elemento = evento.target
+export function formulario_evento_regiao_change_callback(elemento){
+	console.log('Mudou regiao do evento!')
 	Estado.set_regiao_do_evento(elemento.value)
 }
 
-export function formulario_evento_mensagem_change_callback(evento){
-	elemento = evento.target
+export function formulario_evento_mensagem_change_callback(elemento){
+	console.log('Mudou mensagem do evento!')
 	Estado.set_mensagem_do_evento(elemento.value)
 }
 
-export function formulario_regiao_nome_change_callback(evento){
-	elemento = evento.target
+export function formulario_regiao_nome_change_callback(elemento){
+	console.log('Mudou nome da regiao!')
 	Estado.set_nome_da_regiao(elemento.value)
 }
 
-export function formulario_regiao_raio_change_callback(evento){
-	elemento = evento.target
+export function formulario_regiao_raio_change_callback(elemento){
+	console.log('Mudou raio da regiao!')
 	Estado.set_raio_da_regiao(elemento.value)
 }

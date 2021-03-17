@@ -38,6 +38,7 @@ module.exports.cria_evento = async function cria_evento(dados){
 
 module.exports.cria_regiao = async function cria_regiao(dados){
 	consulta = "INSERT INTO regioes (nome,pontos) VALUES ($1,$2);"
+	console.log(dados)
 	parametros = [dados.nome,dados.pontos]
 	resultado = await executa_consulta(consulta,parametros)
 	return resultado	
