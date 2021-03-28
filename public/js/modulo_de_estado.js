@@ -12,16 +12,29 @@ var formulario_de_regiao = undefined
 var formulario_de_evento = undefined
 var flag_criando_regiao = undefined
 var regiao = undefined
+var ultima_consulta_em = data_atual()
+var perido_de_consulta_segundos = 5
+var pontos_no_mapa = undefined
+var regioes_no_mapa = undefined
+var registros = undefined
+
+function data_atual(){
+	var a = new Date()
+	return new Date(a.getTime() - a.getTimezoneOffset()*60000).toISOString().substr(0,19)
+}
+
+
+function atualiza_ultima_consulta(){
+	ultima_consulta_em = data_atual()
+}
 
 function dados_do_evento(){
-	var dados = {nome: undefined, regiao_id: undefined, criterio_id: undefined, mensagem: undefined}
+	var dados = {nome: undefined, criterio_id: undefined, mensagem: undefined}
 	var input_do_nome = document.querySelector('input.formulario-evento-nome')
-	var input_da_regiao = document.querySelector('select.formulario-evento-regiao')
 	var input_do_criterio = document.querySelector('select.formulario-evento-criterio')
 	var input_da_mensagem = document.querySelector('textarea.formulario-evento-mensagem')
 
 	if(input_do_nome != undefined){ dados.nome = input_do_nome.value }
-	if(input_da_regiao != undefined){ dados.regiao_id = input_da_regiao.value }
 	if(input_do_criterio != undefined){ dados.criterio_id = input_do_criterio.value }
 	if(input_da_mensagem != undefined){ dados.mensagem = input_da_mensagem.value }
 
@@ -42,14 +55,15 @@ function dados_do_registro(){
 function dados_da_regiao(){
 	var dados = {nome: undefined, raio: undefined, latitude: undefined, longitude: undefined}
 
-	if(regiao.regiao != undefined){
+	if(regiao != undefined && regiao.regiao != undefined){
 		dados.nome = regiao.nome
 		dados.raio = regiao.regiao.getRadius()
-		dados.latitude = regiao.regiao.getLatLng()[0]
-		dados.longitude = regiao.regiao.getLatLng()[1]
+		dados.latitude = regiao.regiao.getLatLng().lat
+		dados.longitude = regiao.regiao.getLatLng().lng
+		return dados
+	}else{
+		return undefined
 	}
-
-	return dados
 }
 
 function adiciona_layer(){
@@ -119,8 +133,87 @@ function set_nome_da_regiao(nome){
 function set_raio_da_regiao(raio){
 	if(regiao != undefined){
 		regiao.regiao.setRadius(raio)
-		console.log(regiao.regiao.getRadius())
 	}
+}
+
+function salva_regiao(regiao){
+	if(regioes === undefined){
+		regioes = new Map([])
+		regioes.set(regiao.id,{id: regiao.id, nome: regiao.nome, circulo: L.circle([regiao.latitude,regiao.longitude],regiao.raio)})
+	}else{
+		var regiao_antiga = regioes.get(regiao.id)
+		if(regiao_antiga != undefined ){
+			regioes.get(regiao.id).circulo.remove()
+		}
+		regioes.set(regiao.id,{id: regiao.id, nome: regiao.nome, circulo: L.circle([regiao.latitude,regiao.longitude],regiao.raio)})
+	}
+}
+
+function salva_dispositivo(dispositivo){
+	if(dispositivos_no_mapa === undefined){
+		dispositivos = new Map([])
+		dispositivos.set(nome_do_dispositivo,dispositivo)
+	}else{
+		var dispositivo_antigo = dispositivos.get(nome_do_dispositivo)
+		if(dispositivo_antigo != undefined){
+			dispositivo_antigo.remove()
+		}
+		dispositivos.set(nome_do_dispositivo,dispositivo)
+	}
+}
+
+function salva_registro(registro){
+	if(registros === undefined){
+		registros = new Map([])
+		registros.set(registro.id,registro)
+	}else{
+		registros.set(registro.id,registro)
+	}
+}
+
+function salva_evento(evento){
+	if(eventos === undefined){
+		eventos = new Map([])
+		eventos.set(evento.id,evento)
+	}else{
+		eventos.set(evento.id,evento)
+	}
+}
+
+function recupera_regiao_por_id(id_da_regiao){
+	if(regioes === undefined){
+		return undefined
+	}else{
+		return regioes.get(id_da_regiao)
+	}
+}
+
+function recupera_registro_por_id(id_do_registro){
+	if(registros === undefined){
+		return undefined
+	}else{
+		return registros.get(id_do_registro)
+	}
+}
+
+function recupera_evento_por_id(id_do_evento){
+	if(eventos === undefined){
+		return undefined
+	}else{
+		return eventos.get(id_do_evento)
+	}
+}
+
+function insere_regiao_na_lista(dispositivo){
+
+}
+
+function insere_registro_na_lista(dispositivo){
+
+}
+
+function insere_evento_na_lista(dispositivo){
+
 }
 
 function set_formulario_de_registro(formulario){
@@ -145,6 +238,30 @@ function set_campos_da_nova_regiao(campos){
 
 function set_campos_do_novo_evento(campos){
 	novo_evento = campos
+}
+
+function set_nome_do_evento(nome){
+	if(evento != undefined){
+		evento.nome = nome
+	}
+}
+
+function set_regiao_do_evento(regiao){
+	if(evento != undefined){
+		evento.regiao = regiao
+	}
+}
+
+function set_criterio_do_evento(criterio){
+	if(evento != undefined){
+		evento.criterio = criterio
+	}
+}
+
+function set_mensagem_do_evento(mensagem){
+	if(evento != undefined){
+		evento.mensagem = mensagem
+	}
 }
 
 function toggle_flag_criando_regiao(){
@@ -184,5 +301,17 @@ export {
 	reseta_flags_e_dados,
 	dados_da_regiao,
 	dados_do_evento,
-	dados_do_registro
+	dados_do_registro,
+	salva_regiao,
+	salva_registro,
+	salva_evento,
+	recupera_regiao_por_id,
+	recupera_registro_por_id,
+	recupera_evento_por_id,
+	set_mensagem_do_evento,
+	set_criterio_do_evento,
+	set_regiao_do_evento,
+	set_nome_do_evento,
+	ultima_consulta_em,
+	atualiza_ultima_consulta
 }

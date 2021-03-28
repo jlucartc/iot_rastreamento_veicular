@@ -10,6 +10,94 @@ Map.prototype.vazio = function(){
 	}
 }
 
+export function atualiza_app_periodicamente(){
+	setTimeout(busca_novas_mensagens,5000)
+}
+
+function emite_mensagem_de_evento(evento,dispositivo,regiao){
+	fetch('/emite_mensagem_de_evento',{method: 'POST',headers: {'content-type':'application/json'},body: JSON.stringify({dispositivo: dispositivo,regiao_id: regiao.id,evento_id: evento.id})})
+}
+
+function insere_status_do_dispositivo_na_regiao(regiao,dispositivo,esta_na_regiao){
+	fetch('/insere_status_do_dispositivo_na_regiao',{method: 'POST',headers: {'content-type':'application/json'},body: JSON.stringify({regiao_id: regiao.id,dispositivo: dispositivo,esta_na_regiao: esta_na_regiao})})
+}
+
+function checa_se_ha_eventos_de_saida_na_regiao(regiao,dispositivo){
+	fetch('/checa_se_ha_eventos_de_saida_na_regiao',{method: 'POST',headers: {'content-type':'application/json'},body: JSON.stringify({regiao_id: regiao.id})})
+	.then(response => response.json())
+	.then(eventos => {
+		eventos.forEach(function(evento){
+			fetch('/recupera_estado_do_dispositivo_na_regiao',{method: 'POST',header:{'content-type':'application/json'},body: JSON.stringify({dispositivo: dispositivo, regiao_id: regiao.id})})
+			.then(response => response.json())
+			.then(regioes_dispositivos => {
+				regioes_dispositivos.forEach(
+					function(regiao_dispositivo){
+						if(regiao_dispositivo.esta_em_regiao == true && evento.criterio_id == '1'){
+							emite_mensagem_de_evento(evento,dispositivo,regiao)
+						}
+					}
+				)
+
+				if(regioes_dispositivos.length == 0 && evento.criterio_id == '1'){
+					insere_status_do_dispositivo_na_regiao(regiao,dispositivo,false)
+					emite_mensagem_de_evento(evento,dispositivo,regiao)
+				}else if(regioes_dispositivos.length == 0){
+					insere_status_do_dispositivo_na_regiao(regiao,dispositivo,false)
+				}
+
+			})
+		})
+	})
+}
+
+function checa_se_ha_eventos_de_entrada_na_regiao(regiao,dispositivo){
+	fetch('/checa_se_ha_eventos_de_entrada_na_regiao',{method: 'POST',headers:{'content-type':'application/json'},body: JSON.stringify({regiao_id: regiao.id})})
+	.then(response => response.json())
+	.then(eventos => {
+		eventos.forEach(function(evento){
+			fetch('/recupera_estado_do_dispositivo_na_regiao',{method: 'POST',headers:{'content-type':'application/json'},body: JSON.stringify({dispositivo: dispositivo, regiao_id: regiao.id})})
+			.then(response => response.json())
+			.then(regioes_dispositivos => {
+				regioes_dispositivos.forEach(function(regiao_dispositivo){
+					if(regiao_dispositivo.esta_em_regiao == false && evento.criterio_id == '2'){
+						emite_mensagem_de_evento(evento,dispositivo,regiao)
+					}
+				})
+
+				if(regioes_dispositivos.length == 0 && evento.criterio_id == '2'){
+					insere_status_do_dispositivo_na_regiao(regiao,dispositivo,true)
+					emite_mensagem_de_evento(evento,dispositivo,regiao)
+				}else if(regioes_dispositivos.length == 0){
+					insere_status_do_dispositivo_na_regiao(regiao,dispositivo,true)
+				}
+
+			})
+		})
+	})
+}
+
+async function processa_mensagem(mensagem){
+	var coordenadas = string_para_coordenadas(mensagem.payload)
+	fetch('/regioes_onde_o_dispositivo_esta_e_nao_estava',{method: 'POST',headers: {'content-type':'application/json'},body: JSON.stringify({dispositivo: mensagem.dispositivo, latitude: coordenadas[0], longitude: coordenadas[1]})})
+	.then(res => res.json())
+	.then(regioes => {
+		regioes.forEach(function(regiao){ checa_se_ha_eventos_de_entrada_na_regiao(regiao,mensagem.dispositivo) })
+	})
+
+	fetch('/regioes_onde_o_dispositivo_estava_e_nao_esta_mais',{method: 'POST',headers: {'content-type':'application/json'},body: JSON.stringify({dispositivo: mensagem.dispositivo, latitude: coordenadas[0], longitude: coordenadas[1]})})
+	.then(res => res.json())
+	.then(regioes => {
+		regioes.forEach(function(regioes){ checa_se_ha_eventos_de_saida_na_regiao(regiao,mensagem.dispositivo) })
+	})
+}
+
+function busca_novas_mensagens(){
+	var mensagens = fetch('/busca_novas_mensagens',{method: 'POST',headers: {'content-type':'application/json'},body: JSON.stringify({ultima_consulta_em: Estado.ultima_consulta_em})})
+	.then(response => { return response.json() }).then(data => { data.forEach(processa_mensagem) })
+	Estado.atualiza_ultima_consulta()
+	setTimeout(busca_novas_mensagens,10000)
+}
+
 function string_para_coordenadas(string){
 	var coordenadas = atob(string).substring(0,string.length-1).split(';').map(function(item){ return parseFloat(item.trim()) })
 	return coordenadas
@@ -25,7 +113,28 @@ function gera_novo_item(item,classes,atributos){
 	return novo_item_da_lista
 }
 
-function insere_novos_itens_na_lista(nome_do_menu,nome_da_lista){
+function insere_regioes_na_lista(){
+	var nome_do_menu = 'nav-regioes'
+	var nome_da_lista = 'lista-regioes'
+	var request = new XMLHttpRequest()
+	var lista = document.querySelector('div#lista-de-itens')
+	limpa_lista_de_itens()
+	request.onreadystatechange = function(){
+		if(this.readyState == 4 && this.status == 200){
+			JSON.parse(this.response).forEach(function(item,index){
+				Estado.salva_regiao(item)
+				lista.appendChild(gera_novo_item(item.nome,[nome_da_lista],new Map([['id',item.id]])))
+			})
+		}
+	}
+
+	request.open('GET',Mapas.mapa_de_urls.get(nome_do_menu))
+	request.send()
+}
+
+function insere_dispositivos_na_lista(){
+	var nome_do_menu = 'nav-dispositivos'
+	var nome_da_lista = 'lista-dispositivos'
 	var request = new XMLHttpRequest()
 	var lista = document.querySelector('div#lista-de-itens')
 	limpa_lista_de_itens()
@@ -33,6 +142,44 @@ function insere_novos_itens_na_lista(nome_do_menu,nome_da_lista){
 		if(this.readyState == 4 && this.status == 200){
 			JSON.parse(this.response).forEach(function(item,index){
 				lista.appendChild(gera_novo_item(item.dispositivo,[nome_da_lista],new Map([])))
+			})
+		}
+	}
+
+	request.open('GET',Mapas.mapa_de_urls.get(nome_do_menu))
+	request.send()
+}
+
+function insere_eventos_na_lista(){
+	var nome_do_menu = 'nav-eventos'
+	var nome_da_lista = 'lista-eventos'
+	var request = new XMLHttpRequest()
+	var lista = document.querySelector('div#lista-de-itens')
+	limpa_lista_de_itens()
+	request.onreadystatechange = function(){
+		if(this.readyState == 4 && this.status == 200){
+			JSON.parse(this.response).forEach(function(item,index){
+				Estado.salva_evento(item)
+				lista.appendChild(gera_novo_item(item.nome,[nome_da_lista],new Map([['id',item.id]])))
+			})
+		}
+	}
+
+	request.open('GET',Mapas.mapa_de_urls.get(nome_do_menu))
+	request.send()
+}
+
+function insere_registros_na_lista(){
+	var nome_do_menu = 'nav-registros'
+	var nome_da_lista = 'lista-registros'
+	var request = new XMLHttpRequest()
+	var lista = document.querySelector('div#lista-de-itens')
+	limpa_lista_de_itens()
+	request.onreadystatechange = function(){
+		if(this.readyState == 4 && this.status == 200){
+			JSON.parse(this.response).forEach(function(registro,index){
+				Estado.salva_registro(registro)
+				lista.appendChild(gera_novo_item(`Evento: ${registro.evento_nome}, Regiao: ${registro.regiao_nome}`,[nome_da_lista],new Map([['id',registro.id]])))
 			})
 		}
 	}
@@ -52,7 +199,11 @@ function insere_dispositivo_no_mapa(nome_do_dispositivo,coordenadas){
 	dispositivo.addTo(mapa)
 }
 
-function centraliza_mapa_no_dispositivo(coordenada){
+function insere_regiao_no_mapa(regiao){
+	regiao.addTo(Estado.mapa)
+}
+
+function centraliza_mapa_em_coordenada(coordenada){
 	Estado.mapa.flyTo(coordenada)
 }
 
@@ -62,12 +213,13 @@ function cadastra_regiao_no_banco(){
 		if(this.readyState == 4 && this.status == 200){
 			console.log(`Sucesso: ${this.response}`)
 		}else{
-			console.log(`Erro: ${JSON.parse(this.response)}`)
+			console.log(`Erro`)
 		}
 	}
 
 	request.open('POST','/cadastra_regiao')
-	request.send(Estado.dados_da_regiao())
+	request.setRequestHeader('content-type','application/json')
+	request.send(JSON.stringify(Estado.dados_da_regiao()))
 }
 
 function cadastra_registro_no_banco(){
@@ -81,7 +233,8 @@ function cadastra_registro_no_banco(){
 	}
 
 	request.open('POST','/cadastra_registro')
-	request.send(Estado.dados_do_registro())
+	request.setRequestHeader('content-type','application/json')
+	request.send(JSON.stringify(Estado.dados_do_registro()))
 }
 
 function cadastra_evento_no_banco(){
@@ -89,38 +242,102 @@ function cadastra_evento_no_banco(){
 	request.onreadystatechange = function(){
 		if(this.readyState == 4 && this.status == 200){
 			console.log(`Sucesso: ${JSON.parse(this.response)}`)
-		}else{
-			console.log(`Erro: ${JSON.parse(this.response)}`)
 		}
 	}
 
 	request.open('POST','/cadastra_evento')
-	request.send(Estado.dados_do_evento())
+	request.setRequestHeader('content-type','application/json')
+	request.send(JSON.stringify(Estado.dados_do_evento()))
 }
 
-function cria_menu_dispositivos(){
-	insere_novos_itens_na_lista('nav-dispositivos','lista-dispositivos')
+function cria_menu_de_dispositivos(){
+	insere_dispositivos_na_lista()
 }
 
-function cria_menu_regioes(){
-	insere_novos_itens_na_lista('nav-regioes','lista-regioes')
+function cria_menu_de_regioes(){
+	insere_regioes_na_lista()
 	var lista_de_regioes = document.querySelector('div#lista-de-itens')
 	var link_de_criar_regiao = cria_link_de_criar_regiao()
 	lista_de_regioes.appendChild(link_de_criar_regiao)
 }
 
-function cria_menu_eventos(){
-	insere_novos_itens_na_lista('nav-eventos','lista-eventos')
+function cria_menu_de_eventos(){
+	insere_eventos_na_lista()
 	var lista_de_eventos = document.querySelector('div#lista-de-itens')
 	var link_de_criar_evento = cria_link_de_criar_evento()
 	lista_de_eventos.appendChild(link_de_criar_evento)
 }
 
-function cria_menu_registros(){
-	insere_novos_itens_na_lista('nav-registros','lista-registros')
+function cria_menu_de_registros(){
+	insere_registros_na_lista()
 	var lista_de_registros = document.querySelector('div#lista-de-itens')
 	var link_de_criar_registro = cria_link_de_criar_registro()
 	lista_de_registros.appendChild(link_de_criar_registro)
+}
+
+function options_do_select_de_regioes_do_evento(){
+	var select = document.querySelector('select.form-select.formulario-evento-regiao')
+	var options = []
+	Estado.regioes.forEach(function(regiao){
+		var nova_option = document.createElement('option')
+		nova_option.innerHTML = regiao.nome
+		nova_option.value = regiao.id
+		options.push(nova_option)
+	})
+
+	options.forEach(function(option){
+		select.appendChild(option)
+	})
+	options[0].selected = true
+}
+
+function options_do_select_de_regioes_do_registro(){
+	var select = document.querySelector('select.form-select.formulario-registro-regiao')
+	var options = []
+	Estado.regioes.forEach(function(regiao){
+		var nova_option = document.createElement('option')
+		nova_option.innerHTML = regiao.nome
+		nova_option.value = regiao.id
+		options.push(nova_option)
+	})
+
+	options.forEach(function(option){
+		select.appendChild(option)
+	})
+	options[0].selected = true
+}
+
+function options_do_select_de_eventos_do_registro(){
+	var select = document.querySelector('select.form-select.formulario-registro-evento')
+	var options = []
+	Estado.eventos.forEach(function(evento){
+		var nova_option = document.createElement('option')
+		nova_option.innerHTML = evento.nome
+		nova_option.value = evento.id
+		options.push(nova_option)
+	})
+
+	options.forEach(function(option){
+		select.appendChild(option)
+	})
+	options[0].selected = true
+}
+
+function options_do_select_de_criterios_do_evento(){
+	var request = new XMLHttpRequest()
+	var select = document.querySelector('select.form-select.formulario-evento-criterio')
+	request.onreadystatechange = function(){
+		if(this.readyState == 4 && this.status == 200){
+			JSON.parse(this.response).forEach(function(option){
+				var nova_option = document.createElement('option')
+				nova_option.innerHTML = option.nome
+				nova_option.value = option.id
+				select.appendChild(nova_option)
+			})
+		}
+	}
+	request.open('GET','/criterios')
+	request.send()
 }
 
 function cria_link_de_criar_evento(){
@@ -167,7 +384,7 @@ function cria_formulario_de_novo_evento(){
 	label_do_nome.innerHTML = 'Nome'
 
 	var input_do_nome = document.createElement('input')
-	input_do_nome.className = "form-control"
+	input_do_nome.className = "form-control formulario-evento-nome"
 	input_do_nome.setAttribute('type','text')
 	input_do_nome.setAttribute('name','nome')
 
@@ -181,7 +398,6 @@ function cria_formulario_de_novo_evento(){
 	var select_da_regiao = document.createElement('select')
 	select_da_regiao.className = "form-select formulario-evento-regiao"
 	select_da_regiao.setAttribute('name','regiao')
-	var options_da_regiao = []
 
 	var form_group_do_criterio = document.createElement('div')
 	form_group_do_criterio.className = "form-group"
@@ -193,7 +409,6 @@ function cria_formulario_de_novo_evento(){
 	var select_do_criterio = document.createElement('select')
 	select_do_criterio.className = 'form-select formulario-evento-criterio'
 	select_do_criterio.setAttribute('name','criterio')
-	var options_do_criterio = []
 
 	var form_group_da_mensagem = document.createElement('div')
 	form_group_da_mensagem.className = "form-group"
@@ -246,8 +461,8 @@ function cria_formulario_de_novo_evento(){
 	form_group_do_nome.appendChild(label_do_nome)
 	form_group_do_nome.appendChild(input_do_nome)
 
-	form_group_da_regiao.appendChild(label_da_regiao)
-	form_group_da_regiao.appendChild(select_da_regiao)
+	//form_group_da_regiao.appendChild(label_da_regiao)
+	//form_group_da_regiao.appendChild(select_da_regiao)
 
 	form_group_do_criterio.appendChild(label_do_criterio)
 	form_group_do_criterio.appendChild(select_do_criterio)
@@ -256,7 +471,7 @@ function cria_formulario_de_novo_evento(){
 	form_group_da_mensagem.appendChild(input_da_mensagem)
 
 	formulario.appendChild(form_group_do_nome)
-	formulario.appendChild(form_group_da_regiao)
+	//formulario.appendChild(form_group_da_regiao)
 	formulario.appendChild(form_group_do_criterio)
 	formulario.appendChild(form_group_da_mensagem)
 	formulario.appendChild(div_dos_botoes)
@@ -437,7 +652,7 @@ function cria_formulario_de_nova_regiao(){
 	return container_do_formulario
 }
 
-export function item_dispositivos_click_callback(elemento){
+export function clica_em_item_da_lista_de_dispositivos(elemento){
 	console.log('Click no item de dispositivos!')
 	var request = new XMLHttpRequest()
 	var nome_do_dispositivo = elemento.innerHTML
@@ -448,55 +663,59 @@ export function item_dispositivos_click_callback(elemento){
 			JSON.parse(this.response).forEach(function(response){
 				var coordenadas = string_para_coordenadas(response.payload)
 				insere_dispositivo_no_mapa(nome_do_dispositivo,coordenadas)
-				centraliza_mapa_no_dispositivo(coordenadas)
+				centraliza_mapa_em_coordenada(coordenadas)
 			})
 		}
 	}
 	request.send()
 }
 
-export function item_regioes_click_callback(elemento){
+export function clica_em_item_da_lista_de_regioes(elemento){
 	console.log('Click no item de regiões!')
+	var regiao = Estado.recupera_regiao_por_id(elemento.id).circulo
+	insere_regiao_no_mapa(regiao)
+	centraliza_mapa_em_coordenada([regiao.getLatLng().lat,regiao.getLatLng().lng])
 }
 
-export function item_eventos_click_callback(elemento){
+export function clica_em_item_da_lista_de_eventos(elemento){
 	console.log('Click no item de eventos!')
 }
 
-export function nav_dispositivos_click_callback(elemento){
+export function clica_em_menu_de_dispositivos(elemento){
 	console.log('Dispositivos!')
-	cria_menu_dispositivos()
+	cria_menu_de_dispositivos()
 }
 
-export function nav_regioes_click_callback(elemento){
+export function clica_em_menu_de_regioes(elemento){
 	console.log('Regiões!')
 	Estado.reseta_flags_e_dados()
-	cria_menu_regioes()
+	cria_menu_de_regioes()
 }
 
-export function nav_eventos_click_callback(elemento){
+export function clica_em_menu_de_eventos(elemento){
 	console.log('Eventos!')
 	Estado.reseta_flags_e_dados()
-	cria_menu_eventos()
+	cria_menu_de_eventos()
 }
 
-export function nav_registros_click_callback(elemento){
+export function clica_em_menu_de_registros(elemento){
 	console.log('Registros!')
 	Estado.reseta_flags_e_dados()
-	cria_menu_registros()
+	cria_menu_de_registros()
 }
 
-export function cria_evento_click_callback(elemento){
+export function cria_formulario_de_evento(elemento){
 	if(Estado.formulario_de_evento === undefined){ 
 		console.log('Criando novo evento!')
 		var formulario_de_evento = cria_formulario_de_novo_evento()
 		var lista_de_itens = document.querySelector('div#lista-de-itens')
 		lista_de_itens.appendChild(formulario_de_evento)
 		Estado.set_formulario_de_evento(formulario_de_evento)
+		options_do_select_de_criterios_do_evento()
 	}
 }
 
-export function cria_regiao_click_callback(elemento){
+export function cria_formulario_de_regiao(elemento){
 	if(Estado.formulario_de_regiao === undefined){
 		console.log('Criando nova regiao!')
 		var formulario_de_regiao = cria_formulario_de_nova_regiao()
@@ -507,32 +726,34 @@ export function cria_regiao_click_callback(elemento){
 	}
 }
 
-export function cria_registro_click_callback(elemento){
+export function cria_formulario_de_registro(elemento){
 	if(Estado.formulario_de_registro === undefined){
 		console.log('Criando novo registro!')
 		var formulario_de_registro = cria_formulario_de_novo_registro()
 		var lista_de_itens = document.querySelector('div#lista-de-itens')
 		lista_de_itens.appendChild(formulario_de_registro)
 		Estado.set_formulario_de_registro(formulario_de_registro)
+		options_do_select_de_regioes_do_registro()
+		options_do_select_de_eventos_do_registro()
 	}
 }
 
-export function envia_formulario_registro_click_callback(elemento){
+export function confirma_criacao_de_registro(elemento){
 	console.log('Enviando formulario de registro!')
 	cadastra_registro_no_banco()
 }
 
-export function envia_formulario_regiao_click_callback(elemento){
+export function confirma_criacao_de_regiao(elemento){
 	console.log('Enviando formulario de regiao!')
 	cadastra_regiao_no_banco()
 }
 
-export function envia_formulario_evento_click_callback(elemento){
+export function confirma_criacao_de_evento(elemento){
 	console.log('Enviando formulario de evento!')
 	cadastra_evento_no_banco()
 }
 
-export function cancela_formulario_registro_click_callback(elemento){
+export function cancela_criacao_de_registro(elemento){
 	console.log('Cancelando formulario de registro!')
 	if(Estado.formulario_de_registro != undefined){
 		Estado.formulario_de_registro.remove()
@@ -540,7 +761,7 @@ export function cancela_formulario_registro_click_callback(elemento){
 	}
 }
 
-export function cancela_formulario_regiao_click_callback(elemento){
+export function cancela_criacao_de_regiao(elemento){
 	console.log('Cancelando formulario de regiao!')
 	if(Estado.formulario_de_regiao != undefined){
 		Estado.formulario_de_regiao.remove()
@@ -550,7 +771,7 @@ export function cancela_formulario_regiao_click_callback(elemento){
 	}
 }
 
-export function cancela_formulario_evento_click_callback(elemento){
+export function cancela_criacao_de_evento(elemento){
 	console.log('Cancelando formulario de evento!')
 	if(Estado.formulario_de_evento != undefined){
 		Estado.formulario_de_evento.remove()
@@ -558,42 +779,37 @@ export function cancela_formulario_evento_click_callback(elemento){
 	}
 }
 
-export function formulario_registro_evento_change_callback(elemento){
+export function atualiza_evento_do_registro(elemento){
 	console.log('Mudou evento do registro!')
 	Estado.set_evento_do_registro(elemento.value)
 }
 
-export function formulario_registro_regiao_change_callback(elemento){
-	console.log('Mudou regiao do registro')
-	Estado.set_regiao_do_registro(elemento.value)
-}
-
-export function formulario_evento_nome_change_callback(elemento){
-	console.log('Mudou nome do evento!')
-	Estado.set_nome_do_evento(elemento.value)
-}
-
-export function formulario_evento_criterio_change_callback(elemento){
-	console.log('Mudou criterio do evento!')
-	Estado.set_criterio_do_evento(elemento.value)
-}
-
-export function formulario_evento_regiao_change_callback(elemento){
-	console.log('Mudou regiao do evento!')
-	Estado.set_regiao_do_evento(elemento.value)
-}
-
-export function formulario_evento_mensagem_change_callback(elemento){
-	console.log('Mudou mensagem do evento!')
-	Estado.set_mensagem_do_evento(elemento.value)
-}
-
-export function formulario_regiao_nome_change_callback(elemento){
+export function atualiza_nome_da_regiao(elemento){
 	console.log('Mudou nome da regiao!')
 	Estado.set_nome_da_regiao(elemento.value)
 }
 
-export function formulario_regiao_raio_change_callback(elemento){
+export function atualiza_raio_da_regiao(elemento){
 	console.log('Mudou raio da regiao!')
 	Estado.set_raio_da_regiao(elemento.value)
+}
+
+export function atualiza_nome_do_evento(elemento){
+	console.log('Atualiza nome do evento!')
+	Estado.set_nome_do_evento(elemento.value)
+}
+
+export function atualiza_regiao_do_evento(elemento){
+	console.log('Atualiza região do evento!')
+	Estado.set_regiao_do_evento(elemento.value)
+}
+
+export function atualiza_criterio_do_evento(elemento){
+	console.log('Atualiza critério do evento!')
+	Estado.set_criterio_do_evento(elemento.value)
+}
+
+export function atualiza_mensagem_do_evento(elemento){
+	console.log('Atualiza mensagem do evento')
+	Estado.set_mensagem_do_evento(elemento.value)
 }

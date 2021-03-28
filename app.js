@@ -5,6 +5,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const { Client } = require('pg')
 var mqtt = require('mqtt')
+var bodyParser = require('body-parser')
 
 var client = mqtt.connect('mqtt://brazil.thethings.network',{password: 'ttn-account-v2.DPJ83OzXhKXzVJ278Z7VGRnkT58daccikh3jJQvFaE0', username: 'greatway-test'})
 
@@ -19,7 +20,7 @@ client.on('connect', function () {
 })
 
 const conn = new Client({
-		host: 'localhost',
+		host: '127.0.0.1',
     user: 'luca',
     password: '123',
     database: 'iot'
@@ -53,6 +54,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static('files'))
+app.use(bodyParser.text({ type: ['text/plain'] }))
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
