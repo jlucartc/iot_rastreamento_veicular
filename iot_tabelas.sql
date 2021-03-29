@@ -44,6 +44,14 @@ create table mensagens_eventos(
 	primary key(evento_id,regiao_id,dispositivo,data)
 );
 
+create table regioes_dispositivos(
+	id bigserial unique,
+	regiao_id bigint,
+	dispositivo text,
+	esta_na_regiao boolean,
+	primary key(regiao_id,dispositivo)
+)
+
 create extension postgis;
 
 create or replace function notifica_pontos() RETURNS trigger AS

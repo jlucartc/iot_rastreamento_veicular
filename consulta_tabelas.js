@@ -18,6 +18,7 @@ async function executa_consulta(consulta,parametros){
 	if(resultados_da_consulta.rows.vazio()){
 		return resultados_da_consulta.rows.lista_vazia()
 	}else{
+		conexao_com_banco.end()
 		return resultados_da_consulta.rows
 	}
 }
