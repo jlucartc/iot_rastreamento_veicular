@@ -12,6 +12,7 @@ Map.prototype.vazio = function(){
 
 export function atualiza_app_periodicamente(){
 	setTimeout(busca_novas_mensagens,5000)
+	setTimeout(busca_novas_mensagens_de_evento,5000)
 }
 
 function emite_mensagem_de_evento(evento,dispositivo,regiao){
@@ -77,7 +78,10 @@ function checa_se_ha_eventos_de_entrada_na_regiao(regiao,dispositivo){
 }
 
 async function processa_mensagem(mensagem){
-	var coordenadas = string_para_coordenadas(mensagem.payload)
+	var coordenadas = base64_para_coordenadas(mensagem.payload)
+	Estado.atualiza_posicao_do_dispositivo(mensagem.dispositivo,coordenadas)
+	limpa_lista_de_itens()
+	cria_menu_de_dispositivos()
 	fetch('/regioes_onde_o_dispositivo_esta_e_nao_estava',{method: 'POST',headers: {'content-type':'application/json'},body: JSON.stringify({dispositivo: mensagem.dispositivo, latitude: coordenadas[0], longitude: coordenadas[1]})})
 	.then(res => res.json())
 	.then(regioes => {
@@ -91,14 +95,26 @@ async function processa_mensagem(mensagem){
 	})
 }
 
+async function processa_mensagem_de_evento(mensagem){
+	console.log(JSON.stringify(mensagem))
+	alert(`Alerta de evento! Evento: ${mensagem.evento_nome}, Dispositivo: ${mensagem.dispositivo}, Regiao: ${mensagem.regiao_nome}, Data: ${mensagem.data}, Mensagem: ${mensagem.texto}`)
+}
+
 function busca_novas_mensagens(){
-	var mensagens = fetch('/busca_novas_mensagens',{method: 'POST',headers: {'content-type':'application/json'},body: JSON.stringify({ultima_consulta_em: Estado.ultima_consulta_em})})
+	var mensagens = fetch('/busca_novas_mensagens',{method: 'POST',headers: {'content-type':'application/json'},body: JSON.stringify({ultima_consulta_em: Estado.ultima_consulta_de_mensagem})})
 	.then(response => { return response.json() }).then(data => { data.forEach(processa_mensagem) })
-	Estado.atualiza_ultima_consulta()
+	Estado.atualiza_ultima_consulta_de_mensagem()
 	setTimeout(busca_novas_mensagens,10000)
 }
 
-function string_para_coordenadas(string){
+function busca_novas_mensagens_de_evento(){
+	var mensagens = fetch('/busca_novas_mensagens_de_evento',{method: 'POST',headers: {'content-type':'application/json'},body: JSON.stringify({ultima_consulta_em: Estado.ultima_consulta_de_mensagem_de_evento})})
+	.then(response => { return response.json() }).then(data => { console.log();data.forEach(processa_mensagem_de_evento) })
+	Estado.atualiza_ultima_consulta_de_mensagem_de_evento()
+	setTimeout(busca_novas_mensagens_de_evento,10000)
+}
+
+function base64_para_coordenadas(string){
 	var coordenadas = atob(string).substring(0,string.length-1).split(';').map(function(item){ return parseFloat(item.trim()) })
 	return coordenadas
 }
@@ -197,6 +213,7 @@ function insere_dispositivo_no_mapa(nome_do_dispositivo,coordenadas){
 	var mapa = Estado.mapa
 	var dispositivo = L.marker(coordenadas,{icon: L.icon({iconUrl: '../icons/car-icon.png', iconSize: [20,20], iconAnchor: [20,20]}),title: nome_do_dispositivo})
 	dispositivo.addTo(mapa)
+	Estado.salva_dispositivo(dispositivo)
 }
 
 function insere_regiao_no_mapa(regiao){
@@ -654,20 +671,26 @@ function cria_formulario_de_nova_regiao(){
 
 export function clica_em_item_da_lista_de_dispositivos(elemento){
 	console.log('Click no item de dispositivos!')
-	var request = new XMLHttpRequest()
 	var nome_do_dispositivo = elemento.innerHTML
-	var url = `/mensagens/${nome_do_dispositivo}`
-	request.open('GET',url)
-	request.onreadystatechange = function(){
-		if(this.readyState == 4 && this.status == 200){
-			JSON.parse(this.response).forEach(function(response){
-				var coordenadas = string_para_coordenadas(response.payload)
-				insere_dispositivo_no_mapa(nome_do_dispositivo,coordenadas)
-				centraliza_mapa_em_coordenada(coordenadas)
-			})
+	var dispositivo = Estado.recupera_dispositivo_por_nome(nome_do_dispositivo)
+	
+	if(dispositivo != undefined){
+		centraliza_mapa_em_coordenada(dispositivo.getLatLng())
+	}else{
+		var url = `/mensagens/${nome_do_dispositivo}`
+		var request = new XMLHttpRequest()
+		request.open('GET',url)
+		request.onreadystatechange = function(){
+			if(this.readyState == 4 && this.status == 200){
+				JSON.parse(this.response).forEach(function(response){
+					var coordenadas = base64_para_coordenadas(response.payload)
+					insere_dispositivo_no_mapa(nome_do_dispositivo,coordenadas)
+					centraliza_mapa_em_coordenada(coordenadas)
+				})
+			}
 		}
+		request.send()
 	}
-	request.send()
 }
 
 export function clica_em_item_da_lista_de_regioes(elemento){

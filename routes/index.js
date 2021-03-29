@@ -48,20 +48,16 @@ router.post('/busca_novas_mensagens',async function(req, res, next){
 	res.json(await consulta_tabelas.busca_mensagens_publicadas_apos_data(req.body))
 })
 
+router.post('/busca_novas_mensagens_de_evento',async function(req, res, next){
+	res.json(await consulta_tabelas.busca_mensagens_de_evento_publicadas_apos_data(req.body))
+})
+
 router.post('/cria_mensagem_de_evento',async function(req, res, next){
 	res.json(await consulta_tabelas.cria_mensagem_de_evento(req.body))
 })
 
 router.post('/procura_evento_registrado_em_regiao',async function(req, res, next){
 	res.json(await consulta_tabelas.procura_evento_registrado_em_regiao(req.body))
-})
-
-router.post('/procura_regioes_que_contem_ponto',async function(req, res, next){
-	res.json(await consulta_tabelas.procura_regioes_que_contem_ponto(req.body))
-})
-
-router.post('/busca_mensagens_publicadas_apos_data',async function(req, res, next){
-	res.json(await consulta_tabelas.busca_mensagens_publicadas_apos_data(req.body))
 })
 
 router.post('/recupera_estado_do_dispositivo_na_regiao',async function(req, res, next){

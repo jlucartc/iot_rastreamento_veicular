@@ -38,7 +38,7 @@ module.exports.insere_status_do_dispositivo_na_regiao = async function insere_st
 module.exports.emite_mensagem_de_evento = async function emite_mensagem_de_evento(dados){
 	data = new Date()
 	consulta = "INSERT INTO mensagens_eventos (evento_id,regiao_id,dispositivo,data) VALUES ($1,$2,$3,$4)"
-	parametros = [dados.evento_id,dados.regiao_id,dados.dispositivo,new Date(data.getTime() - data.getTimezoneOffset()*60000).toISOString().substr(0,19)]
+	parametros = [dados.evento_id,dados.regiao_id,dados.dispositivo,new Date().toISOString()]
 	resultado = await executa_consulta(consulta,parametros)
 	return resultado
 }
@@ -66,6 +66,7 @@ module.exports.regioes_onde_o_dispositivo_esta_e_nao_estava = async function reg
 
 module.exports.regioes_onde_o_dispositivo_estava_e_nao_esta_mais = async function regioes_onde_o_dispositivo_estava_e_nao_esta_mais(dados){
 	consulta = "SELECT * FROM regioes WHERE regioes.id IN (SELECT regiao_id FROM regioes_dispositivos WHERE dispositivo = $1 and esta_na_regiao is true) and ST_IsEmpty(ST_Intersection(ST_Buffer(ST_Point((center(regioes.circulo))[0],(center(regioes.circulo))[1])::geography,radius(regioes.circulo)),ST_Point($2,$3))::geometry)"
+	console.log(dados)
 	parametros = [dados.dispositivo,dados.longitude,dados.latitude]
 	resultado = await executa_consulta(consulta,parametros)
 	return resultado
@@ -74,13 +75,6 @@ module.exports.regioes_onde_o_dispositivo_estava_e_nao_esta_mais = async functio
 module.exports.cria_mensagem_de_evento = async function cria_mensagem_de_evento(dados){
 	consulta = "INSERT INTO mensagens_eventos (evento_id,regiao_id,dispositivo,data) values ($1,$2,$3,$4)"
 	parametros = [dados.evento_id,dados.regiao_id,dados.dispositivo,dados.data]
-	resultado = await executa_consulta(consulta,parametros)
-	return resultado
-}
-
-module.exports.procura_regioes_que_contem_ponto = async function procura_regioes_que_contem_ponto(dados){
-	consulta = "SELECT * FROM regioes WHERE ST_CENTER(circulo) = ($1,$2)"
-	parametros = [dados.latitude,dados.longitude]
 	resultado = await executa_consulta(consulta,parametros)
 	return resultado
 }
@@ -101,6 +95,13 @@ module.exports.recupera_estado_do_dispositivo_na_regiao = async function recuper
 
 module.exports.busca_mensagens_publicadas_apos_data = async function busca_mensagens_publicadas_apos_data(dados){
 	consulta = "SELECT * FROM mensagens where mensagens.data > $1"
+	parametros = [dados.ultima_consulta_em]
+	resultado = await executa_consulta(consulta,parametros)
+	return resultado
+}
+
+module.exports.busca_mensagens_de_evento_publicadas_apos_data = async function busca_mensagens_de_evento_publicadas_apos_data(dados){
+	consulta = "SELECT mensagens_eventos.id,mensagens_eventos.dispositivo,mensagens_eventos.data,eventos.texto,eventos.nome as \"evento_nome\",regioes.nome as \"regiao_nome\" FROM mensagens_eventos INNER JOIN eventos ON eventos.id = evento_id INNER JOIN regioes ON regioes.id = regiao_id WHERE mensagens_eventos.data > $1"
 	parametros = [dados.ultima_consulta_em]
 	resultado = await executa_consulta(consulta,parametros)
 	return resultado

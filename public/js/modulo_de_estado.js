@@ -12,7 +12,8 @@ var formulario_de_regiao = undefined
 var formulario_de_evento = undefined
 var flag_criando_regiao = undefined
 var regiao = undefined
-var ultima_consulta_em = data_atual()
+var ultima_consulta_de_mensagem = data_atual()
+var ultima_consulta_de_mensagem_de_evento = data_atual()
 var perido_de_consulta_segundos = 5
 var pontos_no_mapa = undefined
 var regioes_no_mapa = undefined
@@ -20,12 +21,31 @@ var registros = undefined
 
 function data_atual(){
 	var a = new Date()
-	return new Date(a.getTime() - a.getTimezoneOffset()*60000).toISOString().substr(0,19)
+	return a.toISOString()
+	//return new Date(a.getTime() - a.getTimezoneOffset()*60000).toISOString().substr(0,19)
 }
 
+function atualiza_ultima_consulta_de_mensagem(){
+	ultima_consulta_de_mensagem = data_atual()
+}
 
-function atualiza_ultima_consulta(){
-	ultima_consulta_em = data_atual()
+function atualiza_ultima_consulta_de_mensagem_de_evento(){
+	ultima_consulta_de_mensagem_de_evento = data_atual()
+}
+
+function atualiza_posicao_do_dispositivo(nome_do_dispositivo,coordenadas){
+	if(dispositivos != undefined){
+		var dispositivo = dispositivos.get(nome_do_dispositivo)
+		if(dispositivo == undefined){
+			dispositivo = new L.marker(coordenadas,{icon: L.icon({iconUrl: '../icons/car-icon.png', iconSize: [20,20], iconAnchor: [20,20]}),title: nome_do_dispositivo})
+			dispositivo.addTo(mapa)
+			dispositivos.set(nome_do_dispositivo,dispositivo)
+		}else{
+			console.log(dispositivo)
+			dispositivo.setLatLng(coordenadas)
+			dispositivos.set(nome_do_dispositivo,dispositivo)
+		}
+	}
 }
 
 function dados_do_evento(){
@@ -67,8 +87,12 @@ function dados_da_regiao(){
 }
 
 function adiciona_layer(){
-	var layer = new L.StamenTileLayer("toner");
-	mapa.addLayer(layer)
+	var layer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      					maxZoom: 19,
+        				attribution: '&copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap contributors</a>'
+      				})
+	layer.addTo(mapa);
+	L.control.scale().addTo(mapa);
 }
 
 function limpa_regiao(){
@@ -150,15 +174,15 @@ function salva_regiao(regiao){
 }
 
 function salva_dispositivo(dispositivo){
-	if(dispositivos_no_mapa === undefined){
+	if(dispositivos === undefined){
 		dispositivos = new Map([])
-		dispositivos.set(nome_do_dispositivo,dispositivo)
+		dispositivos.set(dispositivo.options.title,dispositivo)
 	}else{
-		var dispositivo_antigo = dispositivos.get(nome_do_dispositivo)
+		var dispositivo_antigo = dispositivos.get(dispositivo.options.title)
 		if(dispositivo_antigo != undefined){
 			dispositivo_antigo.remove()
 		}
-		dispositivos.set(nome_do_dispositivo,dispositivo)
+		dispositivos.set(dispositivo.options.title,dispositivo)
 	}
 }
 
@@ -201,6 +225,14 @@ function recupera_evento_por_id(id_do_evento){
 		return undefined
 	}else{
 		return eventos.get(id_do_evento)
+	}
+}
+
+function recupera_dispositivo_por_nome(nome_do_dispositivo){
+	if(dispositivos === undefined){
+		return undefined
+	}else{
+		return dispositivos.get(nome_do_dispositivo)
 	}
 }
 
@@ -302,6 +334,7 @@ export {
 	dados_da_regiao,
 	dados_do_evento,
 	dados_do_registro,
+	salva_dispositivo,
 	salva_regiao,
 	salva_registro,
 	salva_evento,
@@ -312,6 +345,10 @@ export {
 	set_criterio_do_evento,
 	set_regiao_do_evento,
 	set_nome_do_evento,
-	ultima_consulta_em,
-	atualiza_ultima_consulta
+	ultima_consulta_de_mensagem,
+	ultima_consulta_de_mensagem_de_evento,
+	atualiza_ultima_consulta_de_mensagem,
+	atualiza_ultima_consulta_de_mensagem_de_evento,
+	atualiza_posicao_do_dispositivo,
+	recupera_dispositivo_por_nome
 }
