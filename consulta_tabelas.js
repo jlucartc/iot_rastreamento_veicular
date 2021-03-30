@@ -2,7 +2,7 @@ const { Client,Pool } = require('pg')
 
 const pool = new Pool({
 	host:'127.0.0.1',
-	user:'luca',
+	user:'iot',
 	password:'123',
 	database:'iot'
 })

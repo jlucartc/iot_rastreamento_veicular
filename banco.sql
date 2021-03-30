@@ -1,0 +1,859 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 12.6 (Ubuntu 12.6-0ubuntu0.20.04.1)
+-- Dumped by pg_dump version 12.6 (Ubuntu 12.6-0ubuntu0.20.04.1)
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+--
+-- Name: postgis; Type: EXTENSION; Schema: -; Owner: -
+--
+
+CREATE EXTENSION IF NOT EXISTS postgis WITH SCHEMA public;
+
+
+--
+-- Name: EXTENSION postgis; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION postgis IS 'PostGIS geometry and geography spatial types and functions';
+
+
+--
+-- Name: notifica_pontos(); Type: FUNCTION; Schema: public; Owner: iot
+--
+
+CREATE FUNCTION public.notifica_pontos() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+	BEGIN
+		PERFORM pg_notify('nova_mensagem',row_to_json(NEW)::text);
+		RETURN NEW;
+	END
+$$;
+
+
+ALTER FUNCTION public.notifica_pontos() OWNER TO iot;
+
+SET default_tablespace = '';
+
+SET default_table_access_method = heap;
+
+--
+-- Name: criterios; Type: TABLE; Schema: public; Owner: iot
+--
+
+CREATE TABLE public.criterios (
+    id bigint NOT NULL,
+    nome text NOT NULL
+);
+
+
+ALTER TABLE public.criterios OWNER TO iot;
+
+--
+-- Name: criterios_id_seq; Type: SEQUENCE; Schema: public; Owner: iot
+--
+
+CREATE SEQUENCE public.criterios_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.criterios_id_seq OWNER TO iot;
+
+--
+-- Name: criterios_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: iot
+--
+
+ALTER SEQUENCE public.criterios_id_seq OWNED BY public.criterios.id;
+
+
+--
+-- Name: eventos; Type: TABLE; Schema: public; Owner: iot
+--
+
+CREATE TABLE public.eventos (
+    id bigint NOT NULL,
+    nome text NOT NULL,
+    texto text,
+    criterio_id bigint
+);
+
+
+ALTER TABLE public.eventos OWNER TO iot;
+
+--
+-- Name: eventos_id_seq; Type: SEQUENCE; Schema: public; Owner: iot
+--
+
+CREATE SEQUENCE public.eventos_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.eventos_id_seq OWNER TO iot;
+
+--
+-- Name: eventos_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: iot
+--
+
+ALTER SEQUENCE public.eventos_id_seq OWNED BY public.eventos.id;
+
+
+--
+-- Name: mensagens; Type: TABLE; Schema: public; Owner: iot
+--
+
+CREATE TABLE public.mensagens (
+    id bigint NOT NULL,
+    aplicacao text NOT NULL,
+    dispositivo text NOT NULL,
+    payload text NOT NULL,
+    data timestamp with time zone NOT NULL
+);
+
+
+ALTER TABLE public.mensagens OWNER TO iot;
+
+--
+-- Name: mensagens_eventos; Type: TABLE; Schema: public; Owner: iot
+--
+
+CREATE TABLE public.mensagens_eventos (
+    id bigint NOT NULL,
+    evento_id bigint NOT NULL,
+    regiao_id bigint NOT NULL,
+    dispositivo text NOT NULL,
+    data timestamp without time zone NOT NULL
+);
+
+
+ALTER TABLE public.mensagens_eventos OWNER TO iot;
+
+--
+-- Name: mensagens_eventos_id_seq; Type: SEQUENCE; Schema: public; Owner: iot
+--
+
+CREATE SEQUENCE public.mensagens_eventos_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.mensagens_eventos_id_seq OWNER TO iot;
+
+--
+-- Name: mensagens_eventos_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: iot
+--
+
+ALTER SEQUENCE public.mensagens_eventos_id_seq OWNED BY public.mensagens_eventos.id;
+
+
+--
+-- Name: mensagens_id_seq; Type: SEQUENCE; Schema: public; Owner: iot
+--
+
+CREATE SEQUENCE public.mensagens_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.mensagens_id_seq OWNER TO iot;
+
+--
+-- Name: mensagens_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: iot
+--
+
+ALTER SEQUENCE public.mensagens_id_seq OWNED BY public.mensagens.id;
+
+
+--
+-- Name: regioes; Type: TABLE; Schema: public; Owner: iot
+--
+
+CREATE TABLE public.regioes (
+    id bigint NOT NULL,
+    nome text NOT NULL,
+    circulo circle
+);
+
+
+ALTER TABLE public.regioes OWNER TO iot;
+
+--
+-- Name: regioes_dispositivos; Type: TABLE; Schema: public; Owner: iot
+--
+
+CREATE TABLE public.regioes_dispositivos (
+    id bigint NOT NULL,
+    regiao_id bigint NOT NULL,
+    dispositivo text NOT NULL,
+    esta_na_regiao boolean
+);
+
+
+ALTER TABLE public.regioes_dispositivos OWNER TO iot;
+
+--
+-- Name: regioes_dispositivos_id_seq; Type: SEQUENCE; Schema: public; Owner: iot
+--
+
+CREATE SEQUENCE public.regioes_dispositivos_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.regioes_dispositivos_id_seq OWNER TO iot;
+
+--
+-- Name: regioes_dispositivos_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: iot
+--
+
+ALTER SEQUENCE public.regioes_dispositivos_id_seq OWNED BY public.regioes_dispositivos.id;
+
+
+--
+-- Name: regioes_id_seq; Type: SEQUENCE; Schema: public; Owner: iot
+--
+
+CREATE SEQUENCE public.regioes_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.regioes_id_seq OWNER TO iot;
+
+--
+-- Name: regioes_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: iot
+--
+
+ALTER SEQUENCE public.regioes_id_seq OWNED BY public.regioes.id;
+
+
+--
+-- Name: registros; Type: TABLE; Schema: public; Owner: iot
+--
+
+CREATE TABLE public.registros (
+    id bigint NOT NULL,
+    evento_id bigint NOT NULL,
+    regiao_id bigint NOT NULL
+);
+
+
+ALTER TABLE public.registros OWNER TO iot;
+
+--
+-- Name: registros_id_seq; Type: SEQUENCE; Schema: public; Owner: iot
+--
+
+CREATE SEQUENCE public.registros_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.registros_id_seq OWNER TO iot;
+
+--
+-- Name: registros_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: iot
+--
+
+ALTER SEQUENCE public.registros_id_seq OWNED BY public.registros.id;
+
+
+--
+-- Name: criterios id; Type: DEFAULT; Schema: public; Owner: iot
+--
+
+ALTER TABLE ONLY public.criterios ALTER COLUMN id SET DEFAULT nextval('public.criterios_id_seq'::regclass);
+
+
+--
+-- Name: eventos id; Type: DEFAULT; Schema: public; Owner: iot
+--
+
+ALTER TABLE ONLY public.eventos ALTER COLUMN id SET DEFAULT nextval('public.eventos_id_seq'::regclass);
+
+
+--
+-- Name: mensagens id; Type: DEFAULT; Schema: public; Owner: iot
+--
+
+ALTER TABLE ONLY public.mensagens ALTER COLUMN id SET DEFAULT nextval('public.mensagens_id_seq'::regclass);
+
+
+--
+-- Name: mensagens_eventos id; Type: DEFAULT; Schema: public; Owner: iot
+--
+
+ALTER TABLE ONLY public.mensagens_eventos ALTER COLUMN id SET DEFAULT nextval('public.mensagens_eventos_id_seq'::regclass);
+
+
+--
+-- Name: regioes id; Type: DEFAULT; Schema: public; Owner: iot
+--
+
+ALTER TABLE ONLY public.regioes ALTER COLUMN id SET DEFAULT nextval('public.regioes_id_seq'::regclass);
+
+
+--
+-- Name: regioes_dispositivos id; Type: DEFAULT; Schema: public; Owner: iot
+--
+
+ALTER TABLE ONLY public.regioes_dispositivos ALTER COLUMN id SET DEFAULT nextval('public.regioes_dispositivos_id_seq'::regclass);
+
+
+--
+-- Name: registros id; Type: DEFAULT; Schema: public; Owner: iot
+--
+
+ALTER TABLE ONLY public.registros ALTER COLUMN id SET DEFAULT nextval('public.registros_id_seq'::regclass);
+
+
+--
+-- Data for Name: criterios; Type: TABLE DATA; Schema: public; Owner: iot
+--
+
+COPY public.criterios (id, nome) FROM stdin;
+1	Entrou na região
+2	Saiu da região
+\.
+
+
+--
+-- Data for Name: eventos; Type: TABLE DATA; Schema: public; Owner: iot
+--
+
+COPY public.eventos (id, nome, texto, criterio_id) FROM stdin;
+1	Entrou nos blocos de pesquisa	Dispositivo está proximo aos blocos de pesquisa	1
+2	Saiu dos blocos de pesquisa	Veículo se afastou dos blocos de pesquisa	2
+3	Entrou nos fundos do GREaT	Veículo está proximo aos fundos do GREaT	1
+4	Saiu dos fundos do GREaT	Veículo se afastou dos fundos do GREaT	2
+5	Entrou no restaurante universitário	Veículo está próximo do restaurante universitário	1
+6	Saiu do restaurante universitário	Veículo se afastou do restaurante universitário	2
+7	Entrou no estacionamento da Química	Veículo entrou no estacionamento da Química	1
+8	Saiu do estacionamento da Química	Veículo se afastou do estacionamento da Química	2
+\.
+
+
+--
+-- Data for Name: mensagens; Type: TABLE DATA; Schema: public; Owner: iot
+--
+
+COPY public.mensagens (id, aplicacao, dispositivo, payload, data) FROM stdin;
+434	greatway-test	DF25028029C5DCC8	LTMuNzQ2NTU4OyAtMzguNTc5MTkxMA==	2021-03-30 07:20:55.722866-03
+1	greatway-test	DF25028029C5DCC8	IC0zLjc0NjMwNzsgLTM4LjU3ODA1OQA=	2021-02-25 20:46:57.403949-03
+2	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQxMTsgLTM4LjU3ODIxMwA=	2021-02-25 20:47:30.355141-03
+3	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQzMjsgLTM4LjU3ODE4MAA=	2021-02-25 20:48:02.990211-03
+4	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQzMjsgLTM4LjU3ODE4MAA=	2021-02-25 20:48:30.614894-03
+5	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQwOTszODQ4LjI2NjY2NwA=	2021-02-25 20:48:52.482199-03
+6	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQwOTszODQ4LjI2NjY2NwA=	2021-02-25 20:49:32.747779-03
+7	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQxMjsgLTM4LjU3ODE0OAA=	2021-02-25 20:50:16.911189-03
+8	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQyODsgLTM4LjU3ODE1NQA=	2021-02-25 20:51:09.784492-03
+9	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQwMDsgLTM4LjU3ODE5NgA=	2021-02-25 20:51:49.522414-03
+10	greatway-test	DF25028029C5DCC8	IC0zLjc0NjM3MDsgLTM4LjU3ODE4OAA=	2021-02-25 20:52:11.968473-03
+11	greatway-test	DF25028029C5DCC8	IC0zLjc0NjM5NDsgLTM4LjU3ODE4MgA=	2021-02-25 20:52:53.892047-03
+12	greatway-test	DF25028029C5DCC8	IC0zLjc0NjM5MTsgLTM4LjU3ODE0MgA=	2021-02-25 20:53:30.043412-03
+13	greatway-test	DF25028029C5DCC8	IC0zLjc0NjM5MTsgLTM4LjU3ODE3OAA=	2021-02-25 20:54:00.585169-03
+14	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQ4MDsgLTM4LjU3ODE3NQA=	2021-02-25 20:54:42.139948-03
+15	greatway-test	DF25028029C5DCC8	IC0zLjc0NjU1NTsgLTM4LjU3ODEwNgA=	2021-02-25 20:55:51.753076-03
+16	greatway-test	DF25028029C5DCC8	IC0zLjc0NjU1NTsgLTM4LjU3ODEwNgA=	2021-02-25 20:55:56.698456-03
+17	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQ0NTsgLTM4LjU3ODIxNAA=	2021-02-25 20:57:03.059093-03
+18	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQ0NTsgLTM4LjU3ODIwNAA=	2021-02-25 20:57:45.418178-03
+19	greatway-test	DF25028029C5DCC8	IC0zLjc0NjM3NTsgLTM4LjU3ODIxMQA=	2021-02-25 20:58:26.656174-03
+20	greatway-test	DF25028029C5DCC8	IC0zLjc0NjM5NjsgLTM4LjU3ODE2MAA=	2021-02-25 20:59:02.357003-03
+21	greatway-test	DF25028029C5DCC8	IC0zLjc0NjM3ODsgLTM4LjU3ODE1OAA=	2021-02-25 20:59:48.080343-03
+22	greatway-test	DF25028029C5DCC8	IC0zLjc0NjM0NjsgLTM4LjU3ODI0OQA=	2021-02-25 20:59:55.803993-03
+23	greatway-test	DF25028029C5DCC8	IC0zLjc0NjMwMTsgLTM4LjU3ODI4NgA=	2021-02-25 21:01:08.025493-03
+24	greatway-test	DF25028029C5DCC8	IC0zLjc0NjM3OTsgLTM4LjU3ODI0OAA=	2021-02-25 21:01:25.063328-03
+25	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQwMzsgLTM4LjU3ODIyMQA=	2021-02-25 21:02:36.26416-03
+26	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQ1NjsgLTM4LjU3ODE3OAA=	2021-02-25 21:03:10.283631-03
+27	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQ1MjsgLTM4LjU3ODE3MwA=	2021-02-25 21:03:27.647202-03
+28	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQ1MjsgLTM4LjU3ODE3MwA=	2021-02-25 21:03:51.251647-03
+29	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQ5MDsgLTM4LjU3ODE4MgA=	2021-02-25 21:04:02.988668-03
+30	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQ2MDsgLTM4LjU3ODE3NQA=	2021-02-25 21:04:18.216463-03
+31	greatway-test	DF25028029C5DCC8	IC0zLjc0NjM3MDsgLTM4LjU3ODIzMgA=	2021-02-25 21:05:44.055905-03
+32	greatway-test	DF25028029C5DCC8	IC0zLjc0NjMwMDsgLTM4LjU3ODIyMAA=	2021-02-25 21:05:58.756932-03
+33	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQ2NDsgLTM4LjU3ODE5NQA=	2021-02-25 21:07:18.238261-03
+34	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQ2NDsgLTM4LjU3ODE5NQA=	2021-02-25 21:07:55.128059-03
+35	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQzMDsgLTM4LjU3ODI1MQA=	2021-02-25 21:08:30.294491-03
+36	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQzMDsgLTM4LjU3ODI1MQA=	2021-02-25 21:08:53.7641-03
+37	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQyMDsgLTM4LjU3ODE3NgA=	2021-02-25 21:10:02.702525-03
+38	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQyMDsgLTM4LjU3ODE3NgA=	2021-02-25 21:10:22.356355-03
+39	greatway-test	DF25028029C5DCC8	IC0zLjc0NjM0OTsgLTM4LjU3ODE4OQA=	2021-02-25 21:10:39.209955-03
+40	greatway-test	DF25028029C5DCC8	IC0zLjc0NjMyMzsgLTM4LjU3ODE5NwA=	2021-02-25 21:12:11.548295-03
+41	greatway-test	DF25028029C5DCC8	IC0zLjc0NjM4OTsgLTM4LjU3ODIwNAA=	2021-02-25 21:12:41.116307-03
+42	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQwMjsgLTM4LjU3ODI1MwA=	2021-02-25 21:13:30.478004-03
+43	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQyODsgLTM4LjU3ODEyNQA=	2021-02-25 21:14:13.468588-03
+44	greatway-test	DF25028029C5DCC8	IC0zLjc0NjU1MzsgLTM4LjU3ODEwMQA=	2021-02-25 21:14:35.129634-03
+45	greatway-test	DF25028029C5DCC8	IC0zLjc0NjU1ODsgLTM4LjU3ODE5MQA=	2021-02-25 21:15:54.930554-03
+46	greatway-test	DF25028029C5DCC8	IC0zLjc0NjU1ODsgLTM4LjU3ODE5MQA=	2021-02-25 21:16:15.351082-03
+47	greatway-test	DF25028029C5DCC8	IC0zLjc0NjM3NjsgLTM4LjU3ODIyMwA=	2021-02-25 21:17:07.909169-03
+48	greatway-test	DF25028029C5DCC8	IC0zLjc0NjM3NjsgLTM4LjU3ODIyMwA=	2021-02-25 21:17:28.784372-03
+49	greatway-test	DF25028029C5DCC8	IC0zLjc0NjM3NjsgLTM4LjU3ODIyMwA=	2021-02-25 21:18:04.964885-03
+50	greatway-test	DF25028029C5DCC8	IC0zLjc0Njc0ODsgLTM4LjU3ODI2OQA=	2021-02-25 21:18:34.912059-03
+51	greatway-test	DF25028029C5DCC8	IC0zLjc0NjUwMDsgLTM4LjU3ODI1MAA=	2021-02-25 21:19:01.190019-03
+52	greatway-test	DF25028029C5DCC8	IC0zLjc0NjcxMDsgLTM4LjU3ODI3NgA=	2021-02-25 21:19:26.375572-03
+53	greatway-test	DF25028029C5DCC8	IC0zLjc0NjcxMDsgLTM4LjU3ODI3NgA=	2021-02-25 21:19:51.21533-03
+54	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQ5MzsgLTM4LjU3ODIzMgA=	2021-02-25 21:20:09.696702-03
+55	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQzMDsgLTM4LjU3ODIzNAA=	2021-02-25 21:21:21.526476-03
+56	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQzMDsgLTM4LjU3ODIzNAA=	2021-02-25 21:21:54.009853-03
+57	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQzMDsgLTM4LjU3ODIzNAA=	2021-02-25 21:22:04.043742-03
+58	greatway-test	DF25028029C5DCC8	IC0zLjc0NjY5NTsgLTM4LjU3ODIzNAA=	2021-02-25 21:22:43.228339-03
+59	greatway-test	DF25028029C5DCC8	IC0zLjc0NjY5NTsgLTM4LjU3ODIzNAA=	2021-02-25 21:23:03.981861-03
+60	greatway-test	DF25028029C5DCC8	IC0zLjc0NjYwMDsgLTM4LjU3ODE4NwA=	2021-02-25 21:24:01.531853-03
+61	greatway-test	DF25028029C5DCC8	IC0zLjc0NjYwMDsgLTM4LjU3ODE4NwA=	2021-02-25 21:24:35.30225-03
+62	greatway-test	DF25028029C5DCC8	IC0zLjc0NjI1MDsgLTM4LjU3ODI5OQA=	2021-02-25 21:25:23.983339-03
+63	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQ1NjsgLTM4LjU3ODI3MwA=	2021-02-25 21:25:38.303954-03
+64	greatway-test	DF25028029C5DCC8	IC0zLjc0NjM3MTsgLTM4LjU3ODE5NgA=	2021-02-25 21:26:35.305548-03
+65	greatway-test	DF25028029C5DCC8	IC0zLjc0NjM3MTsgLTM4LjU3ODE5NgA=	2021-02-25 21:27:14.722893-03
+66	greatway-test	DF25028029C5DCC8	IC0zLjc0NjM3MTsgLTM4LjU3ODE5NgA=	2021-02-25 21:27:58.851952-03
+67	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQxMTsgLTM4LjU3ODIwMQA=	2021-02-25 21:28:24.283044-03
+68	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQxMDsgLTM4LjU3ODE5MgA=	2021-02-25 21:28:46.193349-03
+69	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQ2NDsgLTM4LjU3ODE5OQA=	2021-02-25 21:29:53.906339-03
+70	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQ2NDsgLTM4LjU3ODE5OQA=	2021-02-25 21:30:04.122958-03
+71	greatway-test	DF25028029C5DCC8	IC0zLjc0NjM4OTsgLTM4LjU3ODIzMAA=	2021-02-25 21:31:06.42421-03
+72	greatway-test	DF25028029C5DCC8	IC0zLjc0NjM4OTsgLTM4LjU3ODIzMAA=	2021-02-25 21:31:36.425593-03
+73	greatway-test	DF25028029C5DCC8	IC0zLjc0NjUxOTsgLTM4LjU3ODIzMAA=	2021-02-25 21:32:15.821043-03
+74	greatway-test	DF25028029C5DCC8	IC0zLjc0NjUxOTsgLTM4LjU3ODIzMAA=	2021-02-25 21:33:03.134316-03
+75	greatway-test	DF25028029C5DCC8	IC0zLjc0NjUxOTsgLTM4LjU3ODIzMAA=	2021-02-25 21:33:26.045971-03
+76	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQ2MjsgLTM4LjU3ODIzMwA=	2021-02-25 21:33:36.18269-03
+77	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQ0NTsgLTM4LjU3ODIzMAA=	2021-02-25 21:34:38.540434-03
+78	greatway-test	DF25028029C5DCC8	IC0zLjc0NjM2NDsgLTM4LjU3ODE3NwA=	2021-02-25 21:35:04.888143-03
+79	greatway-test	DF25028029C5DCC8	IC0zLjc0NjM2NDsgLTM4LjU3ODE3NwA=	2021-02-25 21:35:25.215292-03
+80	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQxNzsgLTM4LjU3ODIxMwA=	2021-02-25 21:35:42.058666-03
+81	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQxNzsgLTM4LjU3ODIxMwA=	2021-02-25 21:36:23.975523-03
+82	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQxODsgLTM4LjU3ODI1NQA=	2021-02-25 21:37:11.177992-03
+83	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQ2NDsgLTM4LjU3ODIxOQA=	2021-02-25 21:37:36.003571-03
+84	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQ2NDsgLTM4LjU3ODIxOQA=	2021-02-25 21:38:18.261488-03
+85	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQzOTsgLTM4LjU3ODIwMwA=	2021-02-25 21:38:54.744446-03
+86	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQxNTsgLTM4LjU3ODE3OAA=	2021-02-25 21:39:17.397727-03
+87	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQ3MjsgLTM4LjU3ODIxNAA=	2021-02-25 21:39:33.492788-03
+88	greatway-test	DF25028029C5DCC8	IC0zLjc0NjU0NjsgLTM4LjU3ODI1MgA=	2021-02-25 21:40:40.324769-03
+89	greatway-test	DF25028029C5DCC8	IC0zLjc0NjU0NjsgLTM4LjU3ODI1MgA=	2021-02-25 21:41:00.615496-03
+90	greatway-test	DF25028029C5DCC8	IC0zLjc0NjU0NjsgLTM4LjU3ODI1MgA=	2021-02-25 21:41:50.937178-03
+91	greatway-test	DF25028029C5DCC8	IC0zLjc0NjM3NzsgLTM4LjU3ODE4OQA=	2021-02-25 21:42:07.543014-03
+92	greatway-test	DF25028029C5DCC8	IC0zLjc0NjMyMjsgLTM4LjU3ODI0MQA=	2021-02-25 21:43:23.844994-03
+93	greatway-test	DF25028029C5DCC8	IC0zLjc0NjMyMjsgLTM4LjU3ODI0MQA=	2021-02-25 21:43:51.631638-03
+94	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQyNDsgLTM4LjU3ODIxMgA=	2021-02-25 21:44:27.169375-03
+95	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQyNDsgLTM4LjU3ODIxMgA=	2021-02-25 21:44:46.729229-03
+96	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQyNDsgLTM4LjU3ODIxMgA=	2021-02-25 21:45:26.60771-03
+97	greatway-test	DF25028029C5DCC8	IC0zLjc0NjUwNjsgLTM4LjU3ODI1MQA=	2021-02-25 21:45:42.748953-03
+98	greatway-test	DF25028029C5DCC8	IC0zLjc0NjUwNjsgLTM4LjU3ODI1MQA=	2021-02-25 21:46:29.134615-03
+99	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQ1MTsgLTM4LjU3ODIwOQA=	2021-02-25 21:46:49.376655-03
+100	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQ5ODsgLTM4LjU3ODE4MQA=	2021-02-25 21:47:08.379296-03
+101	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQ5ODsgLTM4LjU3ODE4MQA=	2021-02-25 21:47:37.535299-03
+102	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQ1OTsgLTM4LjU3ODE3NQA=	2021-02-25 21:48:23.610615-03
+103	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQxNDsgLTM4LjU3ODIzMAA=	2021-02-25 21:48:40.292424-03
+104	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQxOTsgLTM4LjU3ODIyMwA=	2021-02-25 21:49:54.24095-03
+105	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQxOTsgLTM4LjU3ODIyMwA=	2021-02-25 21:50:18.088067-03
+106	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQzNjsgLTM4LjU3ODE1OAA=	2021-02-25 21:50:47.805358-03
+107	greatway-test	DF25028029C5DCC8	IC0zLjc0NjM4NzsgLTM4LjU3ODE3NQA=	2021-02-25 21:51:13.259136-03
+108	greatway-test	DF25028029C5DCC8	IC0zLjc0NjM4NzsgLTM4LjU3ODE3NQA=	2021-02-25 21:51:53.358672-03
+109	greatway-test	DF25028029C5DCC8	IC0zLjc0NjM4OTsgLTM4LjU3ODE3MgA=	2021-02-25 21:52:30.810257-03
+110	greatway-test	DF25028029C5DCC8	IC0zLjc0NjM5NzsgLTM4LjU3ODEzMwA=	2021-02-25 21:52:55.816931-03
+111	greatway-test	DF25028029C5DCC8	IC0zLjc0NjM5NzsgLTM4LjU3ODEzMwA=	2021-02-25 21:53:32.894294-03
+112	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQwNTsgLTM4LjU3ODE2MAA=	2021-02-25 21:54:08.202945-03
+113	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQ2ODsgLTM4LjU3ODIzNwA=	2021-02-25 21:54:28.820367-03
+114	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQ2ODsgLTM4LjU3ODIzNwA=	2021-02-25 21:54:49.625236-03
+115	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQ2ODsgLTM4LjU3ODIzNwA=	2021-02-25 21:55:26.345767-03
+116	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQyMDsgLTM4LjU3ODE1NwA=	2021-02-25 21:55:49.005273-03
+117	greatway-test	DF25028029C5DCC8	IC0zLjc0NjM2MDsgLTM4LjU3ODIwNwA=	2021-02-25 21:56:04.755386-03
+118	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQxNTsgLTM4LjU3ODIzOQA=	2021-02-25 21:57:15.23482-03
+119	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQxNTsgLTM4LjU3ODIzOQA=	2021-02-25 21:57:42.114815-03
+120	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQxNTsgLTM4LjU3ODIzOQA=	2021-02-25 21:58:25.016426-03
+121	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQyMzsgLTM4LjU3ODIyNAA=	2021-02-25 21:58:40.272986-03
+122	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQ0NDsgLTM4LjU3ODI3NQA=	2021-02-25 21:59:48.28476-03
+123	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQ0NDsgLTM4LjU3ODI3NQA=	2021-02-25 21:59:57.871977-03
+124	greatway-test	DF25028029C5DCC8	IC0zLjc0NjI3NDsgLTM4LjU3ODE2MwA=	2021-02-25 22:00:14.106691-03
+125	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQzMDsgLTM4LjU3ODI2OQA=	2021-02-25 22:01:11.430725-03
+126	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQzMDsgLTM4LjU3ODI2OQA=	2021-02-25 22:01:51.087995-03
+127	greatway-test	DF25028029C5DCC8	IC0zLjc0NjYwMzsgLTM4LjU3ODI1MQA=	2021-02-25 22:02:10.771411-03
+128	greatway-test	DF25028029C5DCC8	IC0zLjc0NjYwMzsgLTM4LjU3ODI1MQA=	2021-02-25 22:02:41.868032-03
+129	greatway-test	DF25028029C5DCC8	IC0zLjc0NjMwMDsgLTM4LjU3Nzg3NwA=	2021-02-25 22:03:18.03514-03
+130	greatway-test	DF25028029C5DCC8	IC0zLjc0NjIyMTsgLTM4LjU3Nzg3MQA=	2021-02-25 22:03:39.002272-03
+131	greatway-test	DF25028029C5DCC8	IC0zLjc0NjIyMTsgLTM4LjU3Nzg3MQA=	2021-02-25 22:04:00.605089-03
+132	greatway-test	DF25028029C5DCC8	IC0zLjc0NjIyMTsgLTM4LjU3Nzg3MQA=	2021-02-25 22:04:51.756259-03
+133	greatway-test	DF25028029C5DCC8	IC0zLjc0NjM3MDsgLTM4LjU3ODEyMQA=	2021-02-25 22:05:09.224812-03
+134	greatway-test	DF25028029C5DCC8	IC0zLjc0NjMyMTsgLTM4LjU3ODA5NAA=	2021-02-25 22:05:38.334609-03
+135	greatway-test	DF25028029C5DCC8	IC0zLjc0NjI3NjsgLTM4LjU3ODA4OQA=	2021-02-25 22:05:58.142318-03
+136	greatway-test	DF25028029C5DCC8	IC0zLjc0NjI0MzsgLTM4LjU3Nzk4MwA=	2021-02-25 22:06:26.545796-03
+137	greatway-test	DF25028029C5DCC8	IC0zLjc0NjM4MjsgLTM4LjU3ODE1MgA=	2021-02-25 22:06:53.976281-03
+138	greatway-test	DF25028029C5DCC8	IC0zLjc0NjM1MTsgLTM4LjU3ODE0MQA=	2021-02-25 22:07:25.466752-03
+139	greatway-test	DF25028029C5DCC8	IC0zLjc0NjM2OTsgLTM4LjU3ODE3MgA=	2021-02-25 22:07:59.761909-03
+140	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQ3NTsgLTM4LjU3ODE3MwA=	2021-02-25 22:08:10.045177-03
+141	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQ3NTsgLTM4LjU3ODA5OQA=	2021-02-25 22:09:36.252146-03
+142	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQ3NTsgLTM4LjU3ODA5OQA=	2021-02-25 22:10:07.182816-03
+143	greatway-test	DF25028029C5DCC8	IC0zLjc0NjI5OTsgLTM4LjU3ODE3MgA=	2021-02-25 22:10:16.434692-03
+144	greatway-test	DF25028029C5DCC8	IC0zLjc0NjI5NDsgLTM4LjU3ODE1MQA=	2021-02-25 22:11:20.914704-03
+145	greatway-test	DF25028029C5DCC8	IC0zLjc0NjI5NDsgLTM4LjU3ODE1MQA=	2021-02-25 22:11:45.849073-03
+146	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQxMzsgLTM4LjU3ODE2NgA=	2021-02-25 22:12:10.165864-03
+147	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQxMzsgLTM4LjU3ODE2NgA=	2021-02-25 22:12:16.453932-03
+148	greatway-test	DF25028029C5DCC8	IC0zLjc0NjM2ODsgLTM4LjU3ODIxNwA=	2021-02-25 22:13:19.532366-03
+149	greatway-test	DF25028029C5DCC8	IC0zLjc0NjM2ODsgLTM4LjU3ODIxNwA=	2021-02-25 22:13:39.599162-03
+150	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQ0NzsgLTM4LjU3ODE1NgA=	2021-02-25 22:14:22.277896-03
+151	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQ0NzsgLTM4LjU3ODE1NgA=	2021-02-25 22:14:54.253489-03
+152	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQ0NzsgLTM4LjU3ODE1NgA=	2021-02-25 22:15:32.437331-03
+153	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQ1OTsgLTM4LjU3ODE5OQA=	2021-02-25 22:15:54.578096-03
+154	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQ1OTsgLTM4LjU3ODE5OQA=	2021-02-25 22:16:37.583456-03
+155	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQwODsgLTM4LjU3ODE1NQA=	2021-02-25 22:17:07.660521-03
+156	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQyNjsgLTM4LjU3ODEyOAA=	2021-02-25 22:17:24.940703-03
+157	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQyNjsgLTM4LjU3ODEyOAA=	2021-02-25 22:18:18.735313-03
+158	greatway-test	DF25028029C5DCC8	IC0zLjc0NjM4MTsgLTM4LjU3ODExNQA=	2021-02-25 22:18:36.609008-03
+159	greatway-test	DF25028029C5DCC8	IC0zLjc0NjMyMjsgLTM4LjU3ODA1OAA=	2021-02-25 22:18:42.489105-03
+160	greatway-test	DF25028029C5DCC8	IC0zLjc0NjU1MjsgLTM4LjU3ODI0OQA=	2021-02-25 22:20:09.162079-03
+161	greatway-test	DF25028029C5DCC8	IC0zLjc0NjU1MjsgLTM4LjU3ODI0OQA=	2021-02-25 22:20:39.95307-03
+162	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQ1MzsgLTM4LjU3ODEyOQA=	2021-02-25 22:20:45.494181-03
+163	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQxNDsgLTM4LjU3ODEzMAA=	2021-02-25 22:21:48.961065-03
+164	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQxNDsgLTM4LjU3ODEzMAA=	2021-02-25 22:22:33.559206-03
+165	greatway-test	DF25028029C5DCC8	IC0zLjc0NjM1NDsgLTM4LjU3ODEwOAA=	2021-02-25 22:23:09.179715-03
+166	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQyMzsgLTM4LjU3ODE4NAA=	2021-02-25 22:23:56.425577-03
+167	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQyMzsgLTM4LjU3ODE4NAA=	2021-02-25 22:24:27.928991-03
+168	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQzMDsgLTM4LjU3ODIyNgA=	2021-02-25 22:24:43.426255-03
+169	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQzMDsgLTM4LjU3ODIyNgA=	2021-02-25 22:25:07.605699-03
+170	greatway-test	DF25028029C5DCC8	IC0zLjc0NjMyNTsgLTM4LjU3ODE2NwA=	2021-02-25 22:25:56.104095-03
+171	greatway-test	DF25028029C5DCC8	IC0zLjc0NjMzNTsgLTM4LjU3ODE2NwA=	2021-02-25 22:26:09.886647-03
+172	greatway-test	DF25028029C5DCC8	IC0zLjc0NjM0MTsgLTM4LjU3ODE5MQA=	2021-02-25 22:27:19.949308-03
+173	greatway-test	DF25028029C5DCC8	IC0zLjc0NjM0MTsgLTM4LjU3ODE5MQA=	2021-02-25 22:27:29.138538-03
+174	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQ4ODsgLTM4LjU3ODI0OQA=	2021-02-25 22:28:42.73499-03
+175	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQ4ODsgLTM4LjU3ODI0OQA=	2021-02-25 22:28:46.306411-03
+176	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQ3NDsgLTM4LjU3ODIxMwA=	2021-02-25 22:30:18.034599-03
+177	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQ0MzsgLTM4LjU3ODIwNQA=	2021-02-25 22:30:44.667962-03
+178	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQ0MzsgLTM4LjU3ODIwNQA=	2021-02-25 22:31:20.66324-03
+179	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQyODsgLTM4LjU3ODE1OAA=	2021-02-25 22:31:40.4784-03
+180	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQ2NTsgLTM4LjU3ODEzMAA=	2021-02-25 22:32:35.294382-03
+181	greatway-test	DF25028029C5DCC8	IC0zLjc0NjM3MzsgLTM4LjU3ODEzMAA=	2021-02-25 22:32:50.467693-03
+182	greatway-test	DF25028029C5DCC8	IC0zLjc0NjI2ODsgLTM4LjU3ODA4NgA=	2021-02-25 22:33:51.361873-03
+183	greatway-test	DF25028029C5DCC8	IC0zLjc0NjI2ODsgLTM4LjU3ODA4NgA=	2021-02-25 22:34:17.225877-03
+184	greatway-test	DF25028029C5DCC8	IC0zLjc0NjMwODsgLTM4LjU3Nzk5MQA=	2021-02-25 22:34:52.880977-03
+185	greatway-test	DF25028029C5DCC8	IC0zLjc0NjMwODsgLTM4LjU3Nzk5MQA=	2021-02-25 22:35:25.735232-03
+186	greatway-test	DF25028029C5DCC8	IC0zLjc0NjMwODsgLTM4LjU3ODEzOQA=	2021-02-25 22:35:47.51182-03
+187	greatway-test	DF25028029C5DCC8	IC0zLjc0NjMxMjsgLTM4LjU3ODA2NgA=	2021-02-25 22:36:27.308604-03
+188	greatway-test	DF25028029C5DCC8	IC0zLjc0NjM2NDsgLTM4LjU3ODI0MAA=	2021-02-25 22:37:14.544449-03
+189	greatway-test	DF25028029C5DCC8	IC0zLjc0NjM2NDsgLTM4LjU3ODI0MAA=	2021-02-25 22:37:31.035225-03
+190	greatway-test	DF25028029C5DCC8	IC0zLjc0NjM2NDsgLTM4LjU3ODE5OQA=	2021-02-25 22:38:45.362742-03
+191	greatway-test	DF25028029C5DCC8	IC0zLjc0NjM2NDsgLTM4LjU3ODEzNgA=	2021-02-25 22:39:02.888749-03
+192	greatway-test	DF25028029C5DCC8	IC0zLjc0NjM0MTsgLTM4LjU3ODA4OAA=	2021-02-25 22:40:08.031067-03
+193	greatway-test	DF25028029C5DCC8	IC0zLjc0NjM1NDsgLTM4LjU3ODEzNQA=	2021-02-25 22:40:22.814255-03
+194	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQ0NzsgLTM4LjU3ODIyMAA=	2021-02-25 22:41:37.439629-03
+195	greatway-test	DF25028029C5DCC8	IC0zLjc0NjM1MTsgLTM4LjU3ODE0NgA=	2021-02-25 22:41:52.63124-03
+196	greatway-test	DF25028029C5DCC8	IC0zLjc0NjM3NzsgLTM4LjU3ODE2MgA=	2021-02-25 22:43:00.113608-03
+197	greatway-test	DF25028029C5DCC8	IC0zLjc0NjM3NzsgLTM4LjU3ODE2MgA=	2021-02-25 22:43:30.260179-03
+198	greatway-test	DF25028029C5DCC8	IC0zLjc0NjM3NzsgLTM4LjU3ODE2MgA=	2021-02-25 22:44:15.700172-03
+199	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQwNDsgLTM4LjU3ODE3NQA=	2021-02-25 22:44:37.088-03
+200	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQwNDsgLTM4LjU3ODE3NQA=	2021-02-25 22:44:56.205443-03
+201	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQwNDsgLTM4LjU3ODE3NQA=	2021-02-25 22:45:09.366542-03
+202	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQxMzsgLTM4LjU3ODE5MwA=	2021-02-25 22:45:47.990513-03
+203	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQ1MzsgLTM4LjU3ODE3OQA=	2021-02-25 22:46:08.895487-03
+204	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQxOTsgLTM4LjU3ODE5MAA=	2021-02-25 22:46:34.187924-03
+205	greatway-test	DF25028029C5DCC8	IC0zLjc0NjM5MzsgLTM4LjU3ODE5NwA=	2021-02-25 22:47:15.536472-03
+206	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQwNzsgLTM4LjU3ODExNgA=	2021-02-25 22:47:33.220066-03
+207	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQ0MjsgLTM4LjU3ODEyMAA=	2021-02-25 22:48:47.88843-03
+208	greatway-test	DF25028029C5DCC8	IC0zLjc0NjUwMTsgLTM4LjU3ODEzNQA=	2021-02-25 22:49:27.908511-03
+209	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQxMjsgLTM4LjU3ODEyOAA=	2021-02-25 22:50:07.901836-03
+210	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQ3NDsgLTM4LjU3ODIwNQA=	2021-02-25 22:50:58.443662-03
+211	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQ1NzsgLTM4LjU3ODEzNQA=	2021-02-25 22:51:43.452592-03
+212	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQ3MjsgLTM4LjU3ODI1NQA=	2021-02-25 22:52:35.385837-03
+213	greatway-test	DF25028029C5DCC8	IC0zLjc0NjM3MjsgLTM4LjU3ODI3MQA=	2021-02-25 22:52:42.893163-03
+214	greatway-test	DF25028029C5DCC8	IC0zLjc0NjM3MjsgLTM4LjU3ODI3MQA=	2021-02-25 22:53:50.842441-03
+215	greatway-test	DF25028029C5DCC8	IC0zLjc0NjM3MjsgLTM4LjU3ODI3MQA=	2021-02-25 22:54:35.786129-03
+216	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQ2MTsgLTM4LjU3ODEzMwA=	2021-02-25 22:54:56.959447-03
+217	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQ2MTsgLTM4LjU3ODEzMwA=	2021-02-25 22:55:03.876919-03
+218	greatway-test	DF25028029C5DCC8	IC0zLjc0NjM5NzsgLTM4LjU3ODI0NwA=	2021-02-25 22:56:20.879083-03
+219	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQ1MTsgLTM4LjU3ODE0MgA=	2021-02-25 22:57:05.92847-03
+220	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQ2NjsgLTM4LjU3ODE0MgA=	2021-02-25 22:57:35.22626-03
+221	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQ1NDsgLTM4LjU3ODE2MQA=	2021-02-25 22:58:05.557109-03
+222	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQ1NjsgLTM4LjU3ODE1NAA=	2021-02-25 22:58:31.480841-03
+223	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQxOTsgLTM4LjU3ODIxNAA=	2021-02-25 22:58:43.407565-03
+224	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQyNzsgLTM4LjU3ODE3MQA=	2021-02-25 23:00:05.568339-03
+225	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQxMDsgLTM4LjU3ODIxNQA=	2021-02-25 23:00:42.325479-03
+226	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQxMDsgLTM4LjU3ODIxNQA=	2021-02-25 23:01:03.937755-03
+227	greatway-test	DF25028029C5DCC8	IC0zLjc0NjUwODsgLTM4LjU3ODI4MwA=	2021-02-25 23:02:11.277073-03
+228	greatway-test	DF25028029C5DCC8	IC0zLjc0NjUwODsgLTM4LjU3ODI4MwA=	2021-02-25 23:02:39.869184-03
+229	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQ5ODsgLTM4LjU3ODA3OAA=	2021-02-25 23:02:47.409079-03
+230	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQ5ODsgLTM4LjU3ODA3OAA=	2021-02-25 23:03:34.44413-03
+231	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQxMjsgLTM4LjU3ODIzMgA=	2021-02-25 23:04:02.178481-03
+232	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQxMjsgLTM4LjU3ODIzMgA=	2021-02-25 23:04:54.864979-03
+233	greatway-test	DF25028029C5DCC8	IC0zLjc0NjUyMDsgLTM4LjU3ODA3NwA=	2021-02-25 23:05:42.332714-03
+234	greatway-test	DF25028029C5DCC8	IC0zLjc0NjU3MjsgLTM4LjU3ODA0NgA=	2021-02-25 23:06:08.954672-03
+235	greatway-test	DF25028029C5DCC8	IC0zLjc0NjU3MjsgLTM4LjU3ODA0NgA=	2021-02-25 23:06:47.889252-03
+236	greatway-test	DF25028029C5DCC8	IC0zLjc0NjM4MDsgLTM4LjU3ODE2MQA=	2021-02-25 23:07:28.226282-03
+237	greatway-test	DF25028029C5DCC8	IC0zLjc0NjMwNzsgLTM4LjU3Nzk4MAA=	2021-02-25 23:08:17.930664-03
+238	greatway-test	DF25028029C5DCC8	IC0zLjc0NjI5NzsgLTM4LjU3NzkyMwA=	2021-02-25 23:08:38.57732-03
+239	greatway-test	DF25028029C5DCC8	IC0zLjc0NjI5NzsgLTM4LjU3NzkyMwA=	2021-02-25 23:09:09.138445-03
+240	greatway-test	DF25028029C5DCC8	IC0zLjc0NjMyNTsgLTM4LjU3ODAyNQA=	2021-02-25 23:09:13.351282-03
+241	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQ4ODsgLTM4LjU3ODA1NwA=	2021-02-25 23:10:24.005545-03
+242	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQ0MjsgLTM4LjU3Nzk0NgA=	2021-02-25 23:10:52.900022-03
+243	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQ3OTsgLTM4LjU3Nzk0MQA=	2021-02-25 23:11:14.886287-03
+244	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQ3OTsgLTM4LjU3Nzk0MQA=	2021-02-25 23:11:32.529406-03
+245	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQzNjsgLTM4LjU3ODEyMgA=	2021-02-25 23:12:50.51493-03
+246	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQzNjsgLTM4LjU3ODEyMgA=	2021-02-25 23:13:09.241285-03
+247	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQzNjsgLTM4LjU3ODEyMgA=	2021-02-25 23:13:49.757621-03
+248	greatway-test	DF25028029C5DCC8	IC0zLjc0NjU3OTsgLTM4LjU3ODMyOAA=	2021-02-25 23:14:11.650512-03
+249	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQ5OTsgLTM4LjU3ODA2OQA=	2021-02-25 23:15:13.327419-03
+250	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQ5OTsgLTM4LjU3ODA2OQA=	2021-02-25 23:15:44.567497-03
+251	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQ4NjsgLTM4LjU3ODM3OQA=	2021-02-25 23:16:11.907942-03
+252	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQ4NjsgLTM4LjU3ODM3OQA=	2021-02-25 23:16:47.200648-03
+253	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQ4NjsgLTM4LjU3ODM3OQA=	2021-02-25 23:17:02.642497-03
+254	greatway-test	DF25028029C5DCC8	IC0zLjc0NjM5NTsgLTM4LjU3ODIyMQA=	2021-02-25 23:17:58.416449-03
+255	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQzODsgLTM4LjU3ODQ1NQA=	2021-02-25 23:18:22.564909-03
+256	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQzODsgLTM4LjU3ODQ1NQA=	2021-02-25 23:18:29.326991-03
+\.
+
+
+--
+-- Data for Name: mensagens_eventos; Type: TABLE DATA; Schema: public; Owner: iot
+--
+
+COPY public.mensagens_eventos (id, evento_id, regiao_id, dispositivo, data) FROM stdin;
+\.
+
+
+--
+-- Data for Name: regioes; Type: TABLE DATA; Schema: public; Owner: iot
+--
+
+COPY public.regioes (id, nome, circulo) FROM stdin;
+1	Fundos do GREaT	<(-38.57945948839188,-3.7470463165347505),100>
+2	Blocos de pesquisa	<(-38.578807711601264,-3.745352106068001),100>
+3	Restaurante Universitário	<(-38.578040599823,-3.7471881697109337),50>
+4	Estacionamento da Química	<(-38.577294945716865,-3.7465029918924455),50>
+\.
+
+
+--
+-- Data for Name: regioes_dispositivos; Type: TABLE DATA; Schema: public; Owner: iot
+--
+
+COPY public.regioes_dispositivos (id, regiao_id, dispositivo, esta_na_regiao) FROM stdin;
+\.
+
+
+--
+-- Data for Name: registros; Type: TABLE DATA; Schema: public; Owner: iot
+--
+
+COPY public.registros (id, evento_id, regiao_id) FROM stdin;
+1	3	1
+2	4	1
+3	2	2
+4	1	2
+5	5	3
+6	6	3
+7	7	4
+8	8	4
+\.
+
+
+--
+-- Data for Name: spatial_ref_sys; Type: TABLE DATA; Schema: public; Owner: iot
+--
+
+COPY public.spatial_ref_sys (srid, auth_name, auth_srid, srtext, proj4text) FROM stdin;
+\.
+
+
+--
+-- Name: criterios_id_seq; Type: SEQUENCE SET; Schema: public; Owner: iot
+--
+
+SELECT pg_catalog.setval('public.criterios_id_seq', 2, true);
+
+
+--
+-- Name: eventos_id_seq; Type: SEQUENCE SET; Schema: public; Owner: iot
+--
+
+SELECT pg_catalog.setval('public.eventos_id_seq', 12, true);
+
+
+--
+-- Name: mensagens_eventos_id_seq; Type: SEQUENCE SET; Schema: public; Owner: iot
+--
+
+SELECT pg_catalog.setval('public.mensagens_eventos_id_seq', 7, true);
+
+
+--
+-- Name: mensagens_id_seq; Type: SEQUENCE SET; Schema: public; Owner: iot
+--
+
+SELECT pg_catalog.setval('public.mensagens_id_seq', 434, true);
+
+
+--
+-- Name: regioes_dispositivos_id_seq; Type: SEQUENCE SET; Schema: public; Owner: iot
+--
+
+SELECT pg_catalog.setval('public.regioes_dispositivos_id_seq', 10, true);
+
+
+--
+-- Name: regioes_id_seq; Type: SEQUENCE SET; Schema: public; Owner: iot
+--
+
+SELECT pg_catalog.setval('public.regioes_id_seq', 5, true);
+
+
+--
+-- Name: registros_id_seq; Type: SEQUENCE SET; Schema: public; Owner: iot
+--
+
+SELECT pg_catalog.setval('public.registros_id_seq', 9, true);
+
+
+--
+-- Name: criterios criterios_id_key; Type: CONSTRAINT; Schema: public; Owner: iot
+--
+
+ALTER TABLE ONLY public.criterios
+    ADD CONSTRAINT criterios_id_key UNIQUE (id);
+
+
+--
+-- Name: criterios criterios_pkey; Type: CONSTRAINT; Schema: public; Owner: iot
+--
+
+ALTER TABLE ONLY public.criterios
+    ADD CONSTRAINT criterios_pkey PRIMARY KEY (nome);
+
+
+--
+-- Name: eventos eventos_id_key; Type: CONSTRAINT; Schema: public; Owner: iot
+--
+
+ALTER TABLE ONLY public.eventos
+    ADD CONSTRAINT eventos_id_key UNIQUE (id);
+
+
+--
+-- Name: eventos eventos_pkey; Type: CONSTRAINT; Schema: public; Owner: iot
+--
+
+ALTER TABLE ONLY public.eventos
+    ADD CONSTRAINT eventos_pkey PRIMARY KEY (nome);
+
+
+--
+-- Name: mensagens_eventos mensagens_eventos_id_key; Type: CONSTRAINT; Schema: public; Owner: iot
+--
+
+ALTER TABLE ONLY public.mensagens_eventos
+    ADD CONSTRAINT mensagens_eventos_id_key UNIQUE (id);
+
+
+--
+-- Name: mensagens_eventos mensagens_eventos_pkey; Type: CONSTRAINT; Schema: public; Owner: iot
+--
+
+ALTER TABLE ONLY public.mensagens_eventos
+    ADD CONSTRAINT mensagens_eventos_pkey PRIMARY KEY (evento_id, regiao_id, dispositivo, data);
+
+
+--
+-- Name: mensagens mensagens_id_key; Type: CONSTRAINT; Schema: public; Owner: iot
+--
+
+ALTER TABLE ONLY public.mensagens
+    ADD CONSTRAINT mensagens_id_key UNIQUE (id);
+
+
+--
+-- Name: mensagens mensagens_pkey; Type: CONSTRAINT; Schema: public; Owner: iot
+--
+
+ALTER TABLE ONLY public.mensagens
+    ADD CONSTRAINT mensagens_pkey PRIMARY KEY (aplicacao, dispositivo, payload, data);
+
+
+--
+-- Name: regioes_dispositivos regioes_dispositivos_id_key; Type: CONSTRAINT; Schema: public; Owner: iot
+--
+
+ALTER TABLE ONLY public.regioes_dispositivos
+    ADD CONSTRAINT regioes_dispositivos_id_key UNIQUE (id);
+
+
+--
+-- Name: regioes_dispositivos regioes_dispositivos_pkey; Type: CONSTRAINT; Schema: public; Owner: iot
+--
+
+ALTER TABLE ONLY public.regioes_dispositivos
+    ADD CONSTRAINT regioes_dispositivos_pkey PRIMARY KEY (regiao_id, dispositivo);
+
+
+--
+-- Name: regioes regioes_id_key; Type: CONSTRAINT; Schema: public; Owner: iot
+--
+
+ALTER TABLE ONLY public.regioes
+    ADD CONSTRAINT regioes_id_key UNIQUE (id);
+
+
+--
+-- Name: regioes regioes_pkey; Type: CONSTRAINT; Schema: public; Owner: iot
+--
+
+ALTER TABLE ONLY public.regioes
+    ADD CONSTRAINT regioes_pkey PRIMARY KEY (nome);
+
+
+--
+-- Name: registros registros_id_key; Type: CONSTRAINT; Schema: public; Owner: iot
+--
+
+ALTER TABLE ONLY public.registros
+    ADD CONSTRAINT registros_id_key UNIQUE (id);
+
+
+--
+-- Name: registros registros_pkey; Type: CONSTRAINT; Schema: public; Owner: iot
+--
+
+ALTER TABLE ONLY public.registros
+    ADD CONSTRAINT registros_pkey PRIMARY KEY (regiao_id, evento_id);
+
+
+--
+-- Name: mensagens alerta_novo_ponto; Type: TRIGGER; Schema: public; Owner: iot
+--
+
+CREATE TRIGGER alerta_novo_ponto AFTER INSERT ON public.mensagens FOR EACH STATEMENT EXECUTE FUNCTION public.notifica_pontos();
+
+
+--
+-- PostgreSQL database dump complete
+--
+
