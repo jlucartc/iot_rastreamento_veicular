@@ -10,9 +10,9 @@ Para rodar a aplicação, instale as dependências com `npm install` e execute `
 - Os eventos serão criados pelo próprio postgres via trigger
 
 # Configuração do ambiente
-- Instale o Postgres
-- Instale o pgadmin
-- Instale o PostGIS
+- Instale o Postgres(https://linuxize.com/post/how-to-install-postgresql-on-ubuntu-20-04/)
+- Instale o pgadmin(https://computingforgeeks.com/how-to-install-pgadmin-4-on-ubuntu/)
+- Instale o PostGIS(Passos de 1 até 4: https://computingforgeeks.com/how-to-install-postgis-on-ubuntu-debian/)
 - Crie uma ROLE chamada `iot` com o comando `CREATE ROLE iot WITH LOGIN SUPERUSER CREATEDB CREATEROLE INHERIT REPLICATION CONNECTION LIMIT -1 PASSWORD '123';`
 - Crie uma database chamada `ìot` com o comando `CREATE DATABASE iot;`
 - Execute o comando `psql -d iot -f <caminho-desse-repositorio>/banco.sql` para criar as tabelas e inserir os dados no banco

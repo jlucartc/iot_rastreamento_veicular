@@ -31,7 +31,7 @@ COMMENT ON EXTENSION postgis IS 'PostGIS geometry and geography spatial types an
 
 
 --
--- Name: notifica_pontos(); Type: FUNCTION; Schema: public; Owner: iot
+-- Name: notifica_pontos(); Type: FUNCTION; Schema: public; Owner: luca
 --
 
 CREATE FUNCTION public.notifica_pontos() RETURNS trigger
@@ -44,14 +44,14 @@ CREATE FUNCTION public.notifica_pontos() RETURNS trigger
 $$;
 
 
-ALTER FUNCTION public.notifica_pontos() OWNER TO iot;
+ALTER FUNCTION public.notifica_pontos() OWNER TO luca;
 
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
 
 --
--- Name: criterios; Type: TABLE; Schema: public; Owner: iot
+-- Name: criterios; Type: TABLE; Schema: public; Owner: luca
 --
 
 CREATE TABLE public.criterios (
@@ -60,10 +60,10 @@ CREATE TABLE public.criterios (
 );
 
 
-ALTER TABLE public.criterios OWNER TO iot;
+ALTER TABLE public.criterios OWNER TO luca;
 
 --
--- Name: criterios_id_seq; Type: SEQUENCE; Schema: public; Owner: iot
+-- Name: criterios_id_seq; Type: SEQUENCE; Schema: public; Owner: luca
 --
 
 CREATE SEQUENCE public.criterios_id_seq
@@ -74,17 +74,17 @@ CREATE SEQUENCE public.criterios_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.criterios_id_seq OWNER TO iot;
+ALTER TABLE public.criterios_id_seq OWNER TO luca;
 
 --
--- Name: criterios_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: iot
+-- Name: criterios_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: luca
 --
 
 ALTER SEQUENCE public.criterios_id_seq OWNED BY public.criterios.id;
 
 
 --
--- Name: eventos; Type: TABLE; Schema: public; Owner: iot
+-- Name: eventos; Type: TABLE; Schema: public; Owner: luca
 --
 
 CREATE TABLE public.eventos (
@@ -95,10 +95,10 @@ CREATE TABLE public.eventos (
 );
 
 
-ALTER TABLE public.eventos OWNER TO iot;
+ALTER TABLE public.eventos OWNER TO luca;
 
 --
--- Name: eventos_id_seq; Type: SEQUENCE; Schema: public; Owner: iot
+-- Name: eventos_id_seq; Type: SEQUENCE; Schema: public; Owner: luca
 --
 
 CREATE SEQUENCE public.eventos_id_seq
@@ -109,17 +109,17 @@ CREATE SEQUENCE public.eventos_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.eventos_id_seq OWNER TO iot;
+ALTER TABLE public.eventos_id_seq OWNER TO luca;
 
 --
--- Name: eventos_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: iot
+-- Name: eventos_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: luca
 --
 
 ALTER SEQUENCE public.eventos_id_seq OWNED BY public.eventos.id;
 
 
 --
--- Name: mensagens; Type: TABLE; Schema: public; Owner: iot
+-- Name: mensagens; Type: TABLE; Schema: public; Owner: luca
 --
 
 CREATE TABLE public.mensagens (
@@ -131,10 +131,10 @@ CREATE TABLE public.mensagens (
 );
 
 
-ALTER TABLE public.mensagens OWNER TO iot;
+ALTER TABLE public.mensagens OWNER TO luca;
 
 --
--- Name: mensagens_eventos; Type: TABLE; Schema: public; Owner: iot
+-- Name: mensagens_eventos; Type: TABLE; Schema: public; Owner: luca
 --
 
 CREATE TABLE public.mensagens_eventos (
@@ -146,10 +146,10 @@ CREATE TABLE public.mensagens_eventos (
 );
 
 
-ALTER TABLE public.mensagens_eventos OWNER TO iot;
+ALTER TABLE public.mensagens_eventos OWNER TO luca;
 
 --
--- Name: mensagens_eventos_id_seq; Type: SEQUENCE; Schema: public; Owner: iot
+-- Name: mensagens_eventos_id_seq; Type: SEQUENCE; Schema: public; Owner: luca
 --
 
 CREATE SEQUENCE public.mensagens_eventos_id_seq
@@ -160,17 +160,17 @@ CREATE SEQUENCE public.mensagens_eventos_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.mensagens_eventos_id_seq OWNER TO iot;
+ALTER TABLE public.mensagens_eventos_id_seq OWNER TO luca;
 
 --
--- Name: mensagens_eventos_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: iot
+-- Name: mensagens_eventos_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: luca
 --
 
 ALTER SEQUENCE public.mensagens_eventos_id_seq OWNED BY public.mensagens_eventos.id;
 
 
 --
--- Name: mensagens_id_seq; Type: SEQUENCE; Schema: public; Owner: iot
+-- Name: mensagens_id_seq; Type: SEQUENCE; Schema: public; Owner: luca
 --
 
 CREATE SEQUENCE public.mensagens_id_seq
@@ -181,17 +181,17 @@ CREATE SEQUENCE public.mensagens_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.mensagens_id_seq OWNER TO iot;
+ALTER TABLE public.mensagens_id_seq OWNER TO luca;
 
 --
--- Name: mensagens_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: iot
+-- Name: mensagens_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: luca
 --
 
 ALTER SEQUENCE public.mensagens_id_seq OWNED BY public.mensagens.id;
 
 
 --
--- Name: regioes; Type: TABLE; Schema: public; Owner: iot
+-- Name: regioes; Type: TABLE; Schema: public; Owner: luca
 --
 
 CREATE TABLE public.regioes (
@@ -201,10 +201,10 @@ CREATE TABLE public.regioes (
 );
 
 
-ALTER TABLE public.regioes OWNER TO iot;
+ALTER TABLE public.regioes OWNER TO luca;
 
 --
--- Name: regioes_dispositivos; Type: TABLE; Schema: public; Owner: iot
+-- Name: regioes_dispositivos; Type: TABLE; Schema: public; Owner: luca
 --
 
 CREATE TABLE public.regioes_dispositivos (
@@ -215,10 +215,10 @@ CREATE TABLE public.regioes_dispositivos (
 );
 
 
-ALTER TABLE public.regioes_dispositivos OWNER TO iot;
+ALTER TABLE public.regioes_dispositivos OWNER TO luca;
 
 --
--- Name: regioes_dispositivos_id_seq; Type: SEQUENCE; Schema: public; Owner: iot
+-- Name: regioes_dispositivos_id_seq; Type: SEQUENCE; Schema: public; Owner: luca
 --
 
 CREATE SEQUENCE public.regioes_dispositivos_id_seq
@@ -229,17 +229,17 @@ CREATE SEQUENCE public.regioes_dispositivos_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.regioes_dispositivos_id_seq OWNER TO iot;
+ALTER TABLE public.regioes_dispositivos_id_seq OWNER TO luca;
 
 --
--- Name: regioes_dispositivos_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: iot
+-- Name: regioes_dispositivos_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: luca
 --
 
 ALTER SEQUENCE public.regioes_dispositivos_id_seq OWNED BY public.regioes_dispositivos.id;
 
 
 --
--- Name: regioes_id_seq; Type: SEQUENCE; Schema: public; Owner: iot
+-- Name: regioes_id_seq; Type: SEQUENCE; Schema: public; Owner: luca
 --
 
 CREATE SEQUENCE public.regioes_id_seq
@@ -250,17 +250,17 @@ CREATE SEQUENCE public.regioes_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.regioes_id_seq OWNER TO iot;
+ALTER TABLE public.regioes_id_seq OWNER TO luca;
 
 --
--- Name: regioes_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: iot
+-- Name: regioes_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: luca
 --
 
 ALTER SEQUENCE public.regioes_id_seq OWNED BY public.regioes.id;
 
 
 --
--- Name: registros; Type: TABLE; Schema: public; Owner: iot
+-- Name: registros; Type: TABLE; Schema: public; Owner: luca
 --
 
 CREATE TABLE public.registros (
@@ -270,10 +270,10 @@ CREATE TABLE public.registros (
 );
 
 
-ALTER TABLE public.registros OWNER TO iot;
+ALTER TABLE public.registros OWNER TO luca;
 
 --
--- Name: registros_id_seq; Type: SEQUENCE; Schema: public; Owner: iot
+-- Name: registros_id_seq; Type: SEQUENCE; Schema: public; Owner: luca
 --
 
 CREATE SEQUENCE public.registros_id_seq
@@ -284,66 +284,66 @@ CREATE SEQUENCE public.registros_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.registros_id_seq OWNER TO iot;
+ALTER TABLE public.registros_id_seq OWNER TO luca;
 
 --
--- Name: registros_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: iot
+-- Name: registros_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: luca
 --
 
 ALTER SEQUENCE public.registros_id_seq OWNED BY public.registros.id;
 
 
 --
--- Name: criterios id; Type: DEFAULT; Schema: public; Owner: iot
+-- Name: criterios id; Type: DEFAULT; Schema: public; Owner: luca
 --
 
 ALTER TABLE ONLY public.criterios ALTER COLUMN id SET DEFAULT nextval('public.criterios_id_seq'::regclass);
 
 
 --
--- Name: eventos id; Type: DEFAULT; Schema: public; Owner: iot
+-- Name: eventos id; Type: DEFAULT; Schema: public; Owner: luca
 --
 
 ALTER TABLE ONLY public.eventos ALTER COLUMN id SET DEFAULT nextval('public.eventos_id_seq'::regclass);
 
 
 --
--- Name: mensagens id; Type: DEFAULT; Schema: public; Owner: iot
+-- Name: mensagens id; Type: DEFAULT; Schema: public; Owner: luca
 --
 
 ALTER TABLE ONLY public.mensagens ALTER COLUMN id SET DEFAULT nextval('public.mensagens_id_seq'::regclass);
 
 
 --
--- Name: mensagens_eventos id; Type: DEFAULT; Schema: public; Owner: iot
+-- Name: mensagens_eventos id; Type: DEFAULT; Schema: public; Owner: luca
 --
 
 ALTER TABLE ONLY public.mensagens_eventos ALTER COLUMN id SET DEFAULT nextval('public.mensagens_eventos_id_seq'::regclass);
 
 
 --
--- Name: regioes id; Type: DEFAULT; Schema: public; Owner: iot
+-- Name: regioes id; Type: DEFAULT; Schema: public; Owner: luca
 --
 
 ALTER TABLE ONLY public.regioes ALTER COLUMN id SET DEFAULT nextval('public.regioes_id_seq'::regclass);
 
 
 --
--- Name: regioes_dispositivos id; Type: DEFAULT; Schema: public; Owner: iot
+-- Name: regioes_dispositivos id; Type: DEFAULT; Schema: public; Owner: luca
 --
 
 ALTER TABLE ONLY public.regioes_dispositivos ALTER COLUMN id SET DEFAULT nextval('public.regioes_dispositivos_id_seq'::regclass);
 
 
 --
--- Name: registros id; Type: DEFAULT; Schema: public; Owner: iot
+-- Name: registros id; Type: DEFAULT; Schema: public; Owner: luca
 --
 
 ALTER TABLE ONLY public.registros ALTER COLUMN id SET DEFAULT nextval('public.registros_id_seq'::regclass);
 
 
 --
--- Data for Name: criterios; Type: TABLE DATA; Schema: public; Owner: iot
+-- Data for Name: criterios; Type: TABLE DATA; Schema: public; Owner: luca
 --
 
 COPY public.criterios (id, nome) FROM stdin;
@@ -353,7 +353,7 @@ COPY public.criterios (id, nome) FROM stdin;
 
 
 --
--- Data for Name: eventos; Type: TABLE DATA; Schema: public; Owner: iot
+-- Data for Name: eventos; Type: TABLE DATA; Schema: public; Owner: luca
 --
 
 COPY public.eventos (id, nome, texto, criterio_id) FROM stdin;
@@ -369,11 +369,10 @@ COPY public.eventos (id, nome, texto, criterio_id) FROM stdin;
 
 
 --
--- Data for Name: mensagens; Type: TABLE DATA; Schema: public; Owner: iot
+-- Data for Name: mensagens; Type: TABLE DATA; Schema: public; Owner: luca
 --
 
 COPY public.mensagens (id, aplicacao, dispositivo, payload, data) FROM stdin;
-434	greatway-test	DF25028029C5DCC8	LTMuNzQ2NTU4OyAtMzguNTc5MTkxMA==	2021-03-30 07:20:55.722866-03
 1	greatway-test	DF25028029C5DCC8	IC0zLjc0NjMwNzsgLTM4LjU3ODA1OQA=	2021-02-25 20:46:57.403949-03
 2	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQxMTsgLTM4LjU3ODIxMwA=	2021-02-25 20:47:30.355141-03
 3	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQzMjsgLTM4LjU3ODE4MAA=	2021-02-25 20:48:02.990211-03
@@ -634,7 +633,7 @@ COPY public.mensagens (id, aplicacao, dispositivo, payload, data) FROM stdin;
 
 
 --
--- Data for Name: mensagens_eventos; Type: TABLE DATA; Schema: public; Owner: iot
+-- Data for Name: mensagens_eventos; Type: TABLE DATA; Schema: public; Owner: luca
 --
 
 COPY public.mensagens_eventos (id, evento_id, regiao_id, dispositivo, data) FROM stdin;
@@ -642,7 +641,7 @@ COPY public.mensagens_eventos (id, evento_id, regiao_id, dispositivo, data) FROM
 
 
 --
--- Data for Name: regioes; Type: TABLE DATA; Schema: public; Owner: iot
+-- Data for Name: regioes; Type: TABLE DATA; Schema: public; Owner: luca
 --
 
 COPY public.regioes (id, nome, circulo) FROM stdin;
@@ -654,7 +653,7 @@ COPY public.regioes (id, nome, circulo) FROM stdin;
 
 
 --
--- Data for Name: regioes_dispositivos; Type: TABLE DATA; Schema: public; Owner: iot
+-- Data for Name: regioes_dispositivos; Type: TABLE DATA; Schema: public; Owner: luca
 --
 
 COPY public.regioes_dispositivos (id, regiao_id, dispositivo, esta_na_regiao) FROM stdin;
@@ -662,7 +661,7 @@ COPY public.regioes_dispositivos (id, regiao_id, dispositivo, esta_na_regiao) FR
 
 
 --
--- Data for Name: registros; Type: TABLE DATA; Schema: public; Owner: iot
+-- Data for Name: registros; Type: TABLE DATA; Schema: public; Owner: luca
 --
 
 COPY public.registros (id, evento_id, regiao_id) FROM stdin;
@@ -678,7 +677,7 @@ COPY public.registros (id, evento_id, regiao_id) FROM stdin;
 
 
 --
--- Data for Name: spatial_ref_sys; Type: TABLE DATA; Schema: public; Owner: iot
+-- Data for Name: spatial_ref_sys; Type: TABLE DATA; Schema: public; Owner: luca
 --
 
 COPY public.spatial_ref_sys (srid, auth_name, auth_srid, srtext, proj4text) FROM stdin;
@@ -686,56 +685,56 @@ COPY public.spatial_ref_sys (srid, auth_name, auth_srid, srtext, proj4text) FROM
 
 
 --
--- Name: criterios_id_seq; Type: SEQUENCE SET; Schema: public; Owner: iot
+-- Name: criterios_id_seq; Type: SEQUENCE SET; Schema: public; Owner: luca
 --
 
 SELECT pg_catalog.setval('public.criterios_id_seq', 2, true);
 
 
 --
--- Name: eventos_id_seq; Type: SEQUENCE SET; Schema: public; Owner: iot
+-- Name: eventos_id_seq; Type: SEQUENCE SET; Schema: public; Owner: luca
 --
 
 SELECT pg_catalog.setval('public.eventos_id_seq', 12, true);
 
 
 --
--- Name: mensagens_eventos_id_seq; Type: SEQUENCE SET; Schema: public; Owner: iot
+-- Name: mensagens_eventos_id_seq; Type: SEQUENCE SET; Schema: public; Owner: luca
 --
 
 SELECT pg_catalog.setval('public.mensagens_eventos_id_seq', 7, true);
 
 
 --
--- Name: mensagens_id_seq; Type: SEQUENCE SET; Schema: public; Owner: iot
+-- Name: mensagens_id_seq; Type: SEQUENCE SET; Schema: public; Owner: luca
 --
 
 SELECT pg_catalog.setval('public.mensagens_id_seq', 434, true);
 
 
 --
--- Name: regioes_dispositivos_id_seq; Type: SEQUENCE SET; Schema: public; Owner: iot
+-- Name: regioes_dispositivos_id_seq; Type: SEQUENCE SET; Schema: public; Owner: luca
 --
 
 SELECT pg_catalog.setval('public.regioes_dispositivos_id_seq', 10, true);
 
 
 --
--- Name: regioes_id_seq; Type: SEQUENCE SET; Schema: public; Owner: iot
+-- Name: regioes_id_seq; Type: SEQUENCE SET; Schema: public; Owner: luca
 --
 
 SELECT pg_catalog.setval('public.regioes_id_seq', 5, true);
 
 
 --
--- Name: registros_id_seq; Type: SEQUENCE SET; Schema: public; Owner: iot
+-- Name: registros_id_seq; Type: SEQUENCE SET; Schema: public; Owner: luca
 --
 
 SELECT pg_catalog.setval('public.registros_id_seq', 9, true);
 
 
 --
--- Name: criterios criterios_id_key; Type: CONSTRAINT; Schema: public; Owner: iot
+-- Name: criterios criterios_id_key; Type: CONSTRAINT; Schema: public; Owner: luca
 --
 
 ALTER TABLE ONLY public.criterios
@@ -743,7 +742,7 @@ ALTER TABLE ONLY public.criterios
 
 
 --
--- Name: criterios criterios_pkey; Type: CONSTRAINT; Schema: public; Owner: iot
+-- Name: criterios criterios_pkey; Type: CONSTRAINT; Schema: public; Owner: luca
 --
 
 ALTER TABLE ONLY public.criterios
@@ -751,7 +750,7 @@ ALTER TABLE ONLY public.criterios
 
 
 --
--- Name: eventos eventos_id_key; Type: CONSTRAINT; Schema: public; Owner: iot
+-- Name: eventos eventos_id_key; Type: CONSTRAINT; Schema: public; Owner: luca
 --
 
 ALTER TABLE ONLY public.eventos
@@ -759,7 +758,7 @@ ALTER TABLE ONLY public.eventos
 
 
 --
--- Name: eventos eventos_pkey; Type: CONSTRAINT; Schema: public; Owner: iot
+-- Name: eventos eventos_pkey; Type: CONSTRAINT; Schema: public; Owner: luca
 --
 
 ALTER TABLE ONLY public.eventos
@@ -767,7 +766,7 @@ ALTER TABLE ONLY public.eventos
 
 
 --
--- Name: mensagens_eventos mensagens_eventos_id_key; Type: CONSTRAINT; Schema: public; Owner: iot
+-- Name: mensagens_eventos mensagens_eventos_id_key; Type: CONSTRAINT; Schema: public; Owner: luca
 --
 
 ALTER TABLE ONLY public.mensagens_eventos
@@ -775,7 +774,7 @@ ALTER TABLE ONLY public.mensagens_eventos
 
 
 --
--- Name: mensagens_eventos mensagens_eventos_pkey; Type: CONSTRAINT; Schema: public; Owner: iot
+-- Name: mensagens_eventos mensagens_eventos_pkey; Type: CONSTRAINT; Schema: public; Owner: luca
 --
 
 ALTER TABLE ONLY public.mensagens_eventos
@@ -783,7 +782,7 @@ ALTER TABLE ONLY public.mensagens_eventos
 
 
 --
--- Name: mensagens mensagens_id_key; Type: CONSTRAINT; Schema: public; Owner: iot
+-- Name: mensagens mensagens_id_key; Type: CONSTRAINT; Schema: public; Owner: luca
 --
 
 ALTER TABLE ONLY public.mensagens
@@ -791,7 +790,7 @@ ALTER TABLE ONLY public.mensagens
 
 
 --
--- Name: mensagens mensagens_pkey; Type: CONSTRAINT; Schema: public; Owner: iot
+-- Name: mensagens mensagens_pkey; Type: CONSTRAINT; Schema: public; Owner: luca
 --
 
 ALTER TABLE ONLY public.mensagens
@@ -799,7 +798,7 @@ ALTER TABLE ONLY public.mensagens
 
 
 --
--- Name: regioes_dispositivos regioes_dispositivos_id_key; Type: CONSTRAINT; Schema: public; Owner: iot
+-- Name: regioes_dispositivos regioes_dispositivos_id_key; Type: CONSTRAINT; Schema: public; Owner: luca
 --
 
 ALTER TABLE ONLY public.regioes_dispositivos
@@ -807,7 +806,7 @@ ALTER TABLE ONLY public.regioes_dispositivos
 
 
 --
--- Name: regioes_dispositivos regioes_dispositivos_pkey; Type: CONSTRAINT; Schema: public; Owner: iot
+-- Name: regioes_dispositivos regioes_dispositivos_pkey; Type: CONSTRAINT; Schema: public; Owner: luca
 --
 
 ALTER TABLE ONLY public.regioes_dispositivos
@@ -815,7 +814,7 @@ ALTER TABLE ONLY public.regioes_dispositivos
 
 
 --
--- Name: regioes regioes_id_key; Type: CONSTRAINT; Schema: public; Owner: iot
+-- Name: regioes regioes_id_key; Type: CONSTRAINT; Schema: public; Owner: luca
 --
 
 ALTER TABLE ONLY public.regioes
@@ -823,7 +822,7 @@ ALTER TABLE ONLY public.regioes
 
 
 --
--- Name: regioes regioes_pkey; Type: CONSTRAINT; Schema: public; Owner: iot
+-- Name: regioes regioes_pkey; Type: CONSTRAINT; Schema: public; Owner: luca
 --
 
 ALTER TABLE ONLY public.regioes
@@ -831,7 +830,7 @@ ALTER TABLE ONLY public.regioes
 
 
 --
--- Name: registros registros_id_key; Type: CONSTRAINT; Schema: public; Owner: iot
+-- Name: registros registros_id_key; Type: CONSTRAINT; Schema: public; Owner: luca
 --
 
 ALTER TABLE ONLY public.registros
@@ -839,7 +838,7 @@ ALTER TABLE ONLY public.registros
 
 
 --
--- Name: registros registros_pkey; Type: CONSTRAINT; Schema: public; Owner: iot
+-- Name: registros registros_pkey; Type: CONSTRAINT; Schema: public; Owner: luca
 --
 
 ALTER TABLE ONLY public.registros
@@ -847,7 +846,7 @@ ALTER TABLE ONLY public.registros
 
 
 --
--- Name: mensagens alerta_novo_ponto; Type: TRIGGER; Schema: public; Owner: iot
+-- Name: mensagens alerta_novo_ponto; Type: TRIGGER; Schema: public; Owner: luca
 --
 
 CREATE TRIGGER alerta_novo_ponto AFTER INSERT ON public.mensagens FOR EACH STATEMENT EXECUTE FUNCTION public.notifica_pontos();
