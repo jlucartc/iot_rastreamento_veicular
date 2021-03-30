@@ -1,4 +1,11 @@
-const { Client } = require('pg')
+const { Client,Pool } = require('pg')
+
+const pool = new Pool({
+	host:'127.0.0.1',
+	user:'luca',
+	password:'123',
+	database:'iot'
+})
 
 Array.prototype.vazio = function(){
 	if(this.length > 0){
@@ -13,20 +20,27 @@ Array.prototype.lista_vazia = function(){
 }
 
 async function executa_consulta(consulta,parametros){
-	conexao_com_banco = cria_conexao_com_banco()
-	resultados_da_consulta = await conexao_com_banco.query(consulta,parametros)
+	resultados_da_consulta = await pool.query(consulta,parametros)
 	if(resultados_da_consulta.rows.vazio()){
 		return resultados_da_consulta.rows.lista_vazia()
 	}else{
-		conexao_com_banco.end()
 		return resultados_da_consulta.rows
 	}
 }
 
-function cria_conexao_com_banco(){
-	conexao_com_banco = new Client({host:'127.0.0.1',user:'luca',password:'123',database:'iot'});
-	conexao_com_banco.connect()
-	return conexao_com_banco
+module.exports.carrega_dados_da_aplicacao = async function carrega_dados_da_aplicacao(dados){
+	dispositivos = await executa_consulta("select \"dispositivos\".dispositivo as \"dispositivo\",\"dispositivos_data\".data as \"data\",\"dispositivos_payload\".payload as \"payload\" from (select dispositivo from mensagens group by dispositivo) as \"dispositivos\" inner join (select dispositivo,max(data) as \"data\" from mensagens group by dispositivo) as \"dispositivos_data\" on \"dispositivos_data\".dispositivo = \"dispositivos\".dispositivo inner join (select * from mensagens) as \"dispositivos_payload\" on \"dispositivos_payload\".dispositivo = \"dispositivos_data\".dispositivo and \"dispositivos_payload\".data = \"dispositivos_data\".data")
+	regioes = await executa_consulta("SELECT regioes.nome,(center(regioes.circulo))[0] as \"latitude\",(center(regioes.circulo))[1] as \"longitude\" FROM regioes")
+	registros = await executa_consulta("SELECT * FROM registros")
+	eventos = await executa_consulta("SELECT * FROM eventos")
+	return {dispositivos: dispositivos,regioes: regioes,registros: registros,eventos: eventos}
+}
+
+module.exports.atualiza_status_do_dispositivo_na_regiao = async function atualiza_status_do_dispositivo_na_regiao(dados){
+	consulta = "UPDATE regioes_dispositivos (esta_na_regiao) VALUES ($1) WHERE dispositivo = $2 AND regiao_id = $3"
+	parametros = [dados.esta_na_regiao,dados.dispositivo,dados.regiao_id]
+	resultado = await executa_consulta(consulta,parametros)
+	return resultado
 }
 
 module.exports.insere_status_do_dispositivo_na_regiao = async function insere_status_do_dispositivo_na_regiao(dados){
@@ -45,14 +59,14 @@ module.exports.emite_mensagem_de_evento = async function emite_mensagem_de_event
 }
 
 module.exports.checa_se_ha_eventos_de_entrada_na_regiao = async function checa_se_ha_eventos_de_entrada_na_regiao(dados){
-	consulta = "SELECT eventos.id,eventos.nome,eventos.criterio_id,registros.evento_id,registros.regiao_id FROM eventos INNER JOIN registros ON registros.evento_id = eventos.id WHERE registros.regiao_id = $1 AND eventos.criterio_id = 2"
+	consulta = "SELECT eventos.id,eventos.nome,criterio_id,evento_id,regiao_id FROM eventos INNER JOIN registros ON evento_id = eventos.id WHERE registros.regiao_id = $1 AND eventos.criterio_id = 1"
 	parametros = [dados.regiao_id]
 	resultado = await executa_consulta(consulta,parametros)
 	return resultado
 }
 
 module.exports.checa_se_ha_eventos_de_saida_na_regiao = async function checa_se_ha_eventos_de_saida_na_regiao(dados){
-	consulta = "SELECT eventos.id,eventos.nome,evento_id,regiao_id FROM eventos INNER JOIN registros ON evento_id = eventos.id WHERE registros.regiao_id = $1 AND eventos.criterio_id = 1"
+	consulta = "SELECT eventos.id,eventos.nome,criterio_id,evento_id,regiao_id FROM eventos INNER JOIN registros ON evento_id = eventos.id WHERE registros.regiao_id = $1 AND eventos.criterio_id = 2"
 	parametros = [dados.regiao_id]
 	resultado = await executa_consulta(consulta,parametros)
 	return resultado

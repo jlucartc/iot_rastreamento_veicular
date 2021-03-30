@@ -19,10 +19,20 @@ var pontos_no_mapa = undefined
 var regioes_no_mapa = undefined
 var registros = undefined
 
+export function carrega_dados_da_aplicacao(){
+	fetch('/carrega_dados_da_aplicacao',{method: 'POST', headers: {'content-type':'application/json'}})
+	.then(res => res.json())
+	.then(dados => {
+		dados.regioes.forEach(salva_regiao)
+		dados.eventos.forEach(salva_evento)
+		dados.dispositivos.forEach(function(dispositivo){ var coordenadas = atob(dispositivo.payload); coordenadas = coordenadas.substring(0,coordenadas.length-1).split(';').map(function(coordenada){ return parseFloat(coordenada.trim()) }); dispositivo = L.marker(coordenadas,{icon: L.icon({iconUrl: '../icons/car-icon.png', iconSize: [20,20], iconAnchor: [20,20]}),title: dispositivo.dispositivo}); dispositivo.addTo(mapa) ;salva_dispositivo(dispositivo) })
+		dados.registros.forEach(salva_registro)
+	})
+}
+
 function data_atual(){
 	var a = new Date()
 	return a.toISOString()
-	//return new Date(a.getTime() - a.getTimezoneOffset()*60000).toISOString().substr(0,19)
 }
 
 function atualiza_ultima_consulta_de_mensagem(){
@@ -41,7 +51,6 @@ function atualiza_posicao_do_dispositivo(nome_do_dispositivo,coordenadas){
 			dispositivo.addTo(mapa)
 			dispositivos.set(nome_do_dispositivo,dispositivo)
 		}else{
-			console.log(dispositivo)
 			dispositivo.setLatLng(coordenadas)
 			dispositivos.set(nome_do_dispositivo,dispositivo)
 		}

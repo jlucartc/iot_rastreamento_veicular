@@ -88,4 +88,12 @@ router.post('/insere_status_do_dispositivo_na_regiao',async function(req, res, n
 	res.json(await consulta_tabelas.insere_status_do_dispositivo_na_regiao(req.body))
 })
 
+router.post('/atualiza_status_do_dispositivo_na_regiao',async function(req, res, next){
+	res.json(await consulta_tabelas.atualiza_status_do_dispositivo_na_regiao(req.body))
+})
+
+router.post('/carrega_dados_da_aplicacao',async function(req, res, next){
+	res.json(await consulta_tabelas.carrega_dados_da_aplicacao(req.body))
+})
+
 module.exports = router;

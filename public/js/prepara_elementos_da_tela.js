@@ -3,7 +3,6 @@ import * as Estado from './modulo_de_estado.js'
 import * as Callbacks from './modulo_de_callbacks.js'
 
 function configura_menu_de_navegacao(menu,index){
-	console.log(menu)
 	cadastra_elemento_em_evento(menu,'click')
 }
 
@@ -12,5 +11,7 @@ document.addEventListener("DOMContentLoaded",(event) => {
 	var menus_de_navegacao = document.querySelectorAll('ul.navbar-nav li.nav-item')
 	menus_de_navegacao.forEach(configura_menu_de_navegacao)
 	Estado.cria_mapa()
+	Estado.carrega_dados_da_aplicacao()
 	Callbacks.atualiza_app_periodicamente()
+	Callbacks.clica_em_menu_de_dispositivos()
 });

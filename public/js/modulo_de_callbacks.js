@@ -23,6 +23,10 @@ function insere_status_do_dispositivo_na_regiao(regiao,dispositivo,esta_na_regia
 	fetch('/insere_status_do_dispositivo_na_regiao',{method: 'POST',headers: {'content-type':'application/json'},body: JSON.stringify({regiao_id: regiao.id,dispositivo: dispositivo,esta_na_regiao: esta_na_regiao})})
 }
 
+function atualiza_status_do_dispositivo_na_regiao(regiao,dispositivo,esta_na_regiao){
+	fetch('/atualiza_status_do_dispositivo_na_regiao',{method: 'POST',headers: {'content-type':'application/json'},body: JSON.stringify({regiao_id: regiao.id,dispositivo: dispositivo,esta_na_regiao: esta_na_regiao})})	
+}
+
 function checa_se_ha_eventos_de_saida_na_regiao(regiao,dispositivo){
 	fetch('/checa_se_ha_eventos_de_saida_na_regiao',{method: 'POST',headers: {'content-type':'application/json'},body: JSON.stringify({regiao_id: regiao.id})})
 	.then(response => response.json())
@@ -33,13 +37,14 @@ function checa_se_ha_eventos_de_saida_na_regiao(regiao,dispositivo){
 			.then(regioes_dispositivos => {
 				regioes_dispositivos.forEach(
 					function(regiao_dispositivo){
-						if(regiao_dispositivo.esta_em_regiao == true && evento.criterio_id == '1'){
+						if(regiao_dispositivo.esta_em_regiao == true && evento.criterio_id == '2'){
 							emite_mensagem_de_evento(evento,dispositivo,regiao)
+							atualiza_status_do_dispositivo_na_regiao(regiao,dispositivo,false)
 						}
 					}
 				)
 
-				if(regioes_dispositivos.length == 0 && evento.criterio_id == '1'){
+				if(regioes_dispositivos.length == 0 && evento.criterio_id == '2'){
 					insere_status_do_dispositivo_na_regiao(regiao,dispositivo,false)
 					emite_mensagem_de_evento(evento,dispositivo,regiao)
 				}else if(regioes_dispositivos.length == 0){
@@ -60,12 +65,13 @@ function checa_se_ha_eventos_de_entrada_na_regiao(regiao,dispositivo){
 			.then(response => response.json())
 			.then(regioes_dispositivos => {
 				regioes_dispositivos.forEach(function(regiao_dispositivo){
-					if(regiao_dispositivo.esta_em_regiao == false && evento.criterio_id == '2'){
+					if(regiao_dispositivo.esta_em_regiao == false && evento.criterio_id == '1'){
 						emite_mensagem_de_evento(evento,dispositivo,regiao)
+						atualiza_status_do_dispositivo_na_regiao(regiao,dispositivo,true)
 					}
 				})
 
-				if(regioes_dispositivos.length == 0 && evento.criterio_id == '2'){
+				if(regioes_dispositivos.length == 0 && evento.criterio_id == '1'){
 					insere_status_do_dispositivo_na_regiao(regiao,dispositivo,true)
 					emite_mensagem_de_evento(evento,dispositivo,regiao)
 				}else if(regioes_dispositivos.length == 0){
@@ -91,12 +97,11 @@ async function processa_mensagem(mensagem){
 	fetch('/regioes_onde_o_dispositivo_estava_e_nao_esta_mais',{method: 'POST',headers: {'content-type':'application/json'},body: JSON.stringify({dispositivo: mensagem.dispositivo, latitude: coordenadas[0], longitude: coordenadas[1]})})
 	.then(res => res.json())
 	.then(regioes => {
-		regioes.forEach(function(regioes){ checa_se_ha_eventos_de_saida_na_regiao(regiao,mensagem.dispositivo) })
+		regioes.forEach(function(regiao){ checa_se_ha_eventos_de_saida_na_regiao(regiao,mensagem.dispositivo) })
 	})
 }
 
 async function processa_mensagem_de_evento(mensagem){
-	console.log(JSON.stringify(mensagem))
 	alert(`Alerta de evento! Evento: ${mensagem.evento_nome}, Dispositivo: ${mensagem.dispositivo}, Regiao: ${mensagem.regiao_nome}, Data: ${mensagem.data}, Mensagem: ${mensagem.texto}`)
 }
 
@@ -109,7 +114,7 @@ function busca_novas_mensagens(){
 
 function busca_novas_mensagens_de_evento(){
 	var mensagens = fetch('/busca_novas_mensagens_de_evento',{method: 'POST',headers: {'content-type':'application/json'},body: JSON.stringify({ultima_consulta_em: Estado.ultima_consulta_de_mensagem_de_evento})})
-	.then(response => { return response.json() }).then(data => { console.log();data.forEach(processa_mensagem_de_evento) })
+	.then(response => { return response.json() }).then(data => { data.forEach(processa_mensagem_de_evento) })
 	Estado.atualiza_ultima_consulta_de_mensagem_de_evento()
 	setTimeout(busca_novas_mensagens_de_evento,10000)
 }
@@ -229,9 +234,12 @@ function cadastra_regiao_no_banco(){
 	request.onreadystatechange = function(){
 		if(this.readyState == 4 && this.status == 200){
 			console.log(`Sucesso: ${this.response}`)
+			Estado.reseta_flags_e_dados()
+			cria_menu_de_regioes()
 		}else{
 			console.log(`Erro`)
 		}
+
 	}
 
 	request.open('POST','/cadastra_regiao')
@@ -244,6 +252,8 @@ function cadastra_registro_no_banco(){
 	request.onreadystatechange = function(){
 		if(this.readyState == 4 && this.status == 200){
 			console.log(`Sucesso: ${JSON.parse(this.response)}`)
+			Estado.reseta_flags_e_dados()
+			cria_menu_de_registros()
 		}else{
 			console.log(`Erro: ${JSON.parse(this.response)}`)
 		}
@@ -259,6 +269,8 @@ function cadastra_evento_no_banco(){
 	request.onreadystatechange = function(){
 		if(this.readyState == 4 && this.status == 200){
 			console.log(`Sucesso: ${JSON.parse(this.response)}`)
+			Estado.reseta_flags_e_dados()
+			cria_menu_de_eventos()
 		}
 	}
 
@@ -764,6 +776,7 @@ export function cria_formulario_de_registro(elemento){
 export function confirma_criacao_de_registro(elemento){
 	console.log('Enviando formulario de registro!')
 	cadastra_registro_no_banco()
+
 }
 
 export function confirma_criacao_de_regiao(elemento){
