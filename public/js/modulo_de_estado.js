@@ -143,6 +143,10 @@ function cria_regiao_no_mapa(e){
 	}
 }
 
+function mostra_coordenadas(e){
+	console.log(e)
+}
+
 function cria_mapa(id,lat,lng){
 	if(mapa === undefined){
 		mapa = L.map('mapa')
@@ -155,6 +159,7 @@ function cria_mapa(id,lat,lng){
 		adiciona_layer()
 	}
 	mapa.addEventListener('click',cria_regiao_no_mapa)
+	mapa.addEventListener('click',mostra_coordenadas)
 }
 
 function set_nome_da_regiao(nome){

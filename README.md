@@ -5,9 +5,10 @@ Aplicação de visualização de dados de rastreamento veicular
 Para rodar a aplicação, instale as dependências com `npm install` e execute `DEBUG=iot-rastreamento-veicular-app:* npm start`
 
 # Objetivos
-- Inicializar mapa com dados mais recentes(ultimos 10 minutos)
-- Utilizar AJAX e Postgres LISTEN/NOTIFY para atualizar o mapa de acordo com a chegada dos pontos
-- Os eventos serão criados pelo próprio postgres via trigger
+- Inicializar mapa com regiões de interesse e um dispositivo
+- Iniciar um client MQTT para alimentar o banco com novas mensagens
+- Utilizar AJAX para atualizar o mapa de acordo com a chegada dos pontos
+- Os eventos serão criados pela aplicação utilizando PostGIS
 
 # Configuração do ambiente
 - Instale o Postgres(https://linuxize.com/post/how-to-install-postgresql-on-ubuntu-20-04/)
@@ -18,10 +19,39 @@ Para rodar a aplicação, instale as dependências com `npm install` e execute `
 - Execute o comando `psql -d iot -f <caminho-desse-repositorio>/banco.sql` para criar as tabelas e inserir os dados no banco
 - Rode a aplicação
 
-# Teste
-- Acesse a pagina da aplicação na TTN
-- Acesse o dispositivo da aplicação
-- Envie uma mensagem de uplink com o payload `2d 33 2e 37 34 36 35 35 38 3b 20 2d 33 38 2e 35 37 39 31 39 31 30`
-- Cheque se a aplicação emitiu um evento de entrada
-- Envie outra mensagem de uplink com o payload `2d 33 2e 37 34 36 35 35 38 3b 20 2d 33 38 2e 35 38 30 31 39 31 30`
-- Cheque se a aplicação emitiu um evento de saida
+# Teste:
+
+Rota com as paradas de ônibus do Pici:
+
+- `2d 33 2e 37 33 38 39 31 37 38 32 33 34 39 38 34 31 38 36 3b 2d 33 38 2e 35 36 39 34 35 30 38 32 39 37 37 39 33 35 30 0a`
+- `2d 33 2e 37 33 38 38 32 31 34 36 39 34 39 30 32 34 32 34 3b 2d 33 38 2e 35 36 39 36 33 30 34 33 37 34 34 33 38 37 30`
+- `2d 33 2e 37 33 38 35 35 39 31 37 32 34 31 34 33 33 30 38 3b 2d 33 38 2e 35 36 39 37 30 32 38 31 36 36 35 31 39 35 34 30`
+- `2d 33 2e 37 33 39 32 36 38 34 34 34 39 33 38 38 31 34 37 3b 2d 33 38 2e 35 37 32 32 32 38 30 34 36 38 30 30 38 38 30`
+- `2d 33 2e 37 33 39 33 33 32 36 38 30 39 31 32 37 30 31 34 3b 2d 33 38 2e 35 37 32 33 36 37 34 34 33 37 39 34 32 35 36 30`
+- `2d 33 2e 37 33 39 35 38 34 32 37 31 37 36 35 30 38 32 37 3b 2d 33 38 2e 35 37 32 36 35 36 39 36 30 36 32 36 36 32 30`
+- `2d 33 2e 37 34 32 33 34 33 37 33 36 39 30 35 37 31 35 35 3b 2d 33 38 2e 35 37 34 38 39 36 36 35 33 39 39 32 34 35 34 30`
+- `2d 33 2e 37 34 32 35 33 39 31 32 30 36 32 35 39 36 39 3b 2d 33 38 2e 35 37 34 39 35 30 32 36 38 32 32 30 36 36 30`
+- `2d 33 2e 37 34 32 39 32 31 38 35 38 34 37 32 32 32 33 3b 2d 33 38 2e 35 37 34 39 32 30 37 38 30 33 39 35 31 34 30`
+- `2d 33 2e 37 34 34 39 39 36 31 33 34 30 39 39 35 38 32 35 3b 2d 33 38 2e 35 37 36 31 30 30 34 37 37 36 32 31 31 39 30`
+- `2d 33 2e 37 34 35 30 32 38 32 35 31 38 37 37 31 31 32 3b 2d 33 38 2e 35 37 36 33 37 36 35 39 30 38 39 36 34 39 30`
+- `2d 33 2e 37 34 35 32 34 32 33 37 30 33 36 33 38 34 38 37 3b 2d 33 38 2e 35 37 36 37 37 39 33 35 38 30 35 31 35 34 30`
+- `2d 33 2e 37 34 36 37 35 37 32 35 37 31 36 31 31 33 38 3b 2d 33 38 2e 35 37 37 37 39 30 37 30 38 30 39 38 36 30`
+- `2d 33 2e 37 34 36 39 33 39 32 35 37 35 31 38 36 31 34 3b 2d 33 38 2e 35 37 37 36 39 39 35 36 33 39 31 30 36 31 30`
+- `2d 33 2e 37 34 37 32 33 30 39 39 33 33 30 36 37 36 35 33 3b 2d 33 38 2e 35 37 37 35 30 33 38 37 31 39 37 37 36 33 30`
+- `2d 33 2e 37 34 37 39 35 36 33 31 37 36 34 32 38 30 32 36 3b 2d 33 38 2e 35 37 36 33 35 31 31 36 36 30 37 31 30 31 34 30`
+- `2d 33 2e 37 34 37 38 38 39 34 30 35 38 32 38 38 37 34 3b 2d 33 38 2e 35 37 36 30 33 34 38 34 32 31 32 34 35 33 35 30`
+- `2d 33 2e 37 34 37 37 37 34 33 31 37 34 39 36 39 33 35 3b 2d 33 38 2e 35 37 35 37 31 30 34 37 36 30 34 33 38 34 30`
+- `2d 33 2e 37 34 37 31 31 33 32 32 38 34 31 33 31 36 38 3b 2d 33 38 2e 35 37 33 36 37 33 31 33 35 33 37 31 36 37 30`
+- `2d 33 2e 37 34 37 30 34 36 33 31 36 35 33 34 37 35 30 35 3b 2d 33 38 2e 35 37 33 34 35 35 39 39 37 37 34 37 33 39 30`
+- `2d 33 2e 37 34 36 39 32 33 31 39 38 36 36 35 30 37 30 34 3b 2d 33 38 2e 35 37 33 30 34 35 38 34 38 39 30 31 35 36 30`
+- `2d 33 2e 37 34 35 33 32 35 33 34 31 32 36 33 33 38 36 37 3b 2d 33 38 2e 35 37 32 39 34 33 39 38 31 38 36 37 39 36 30`
+- `2d 33 2e 37 34 35 31 30 35 38 36 39 38 33 34 35 39 39 3b 2d 33 38 2e 35 37 33 30 35 33 38 39 31 30 33 35 37 38 30`
+- `2d 33 2e 37 34 34 39 32 36 35 34 35 35 37 37 35 36 33 3b 2d 33 38 2e 35 37 33 33 31 39 32 38 31 34 36 35 34 35 30`
+- `2d 33 2e 37 34 33 30 31 38 32 31 32 30 32 39 35 33 36 38 3b 2d 33 38 2e 35 37 34 38 30 34 39 34 30 37 31 34 39 31 30`
+- `2d 33 2e 37 34 32 38 32 35 35 30 34 39 30 34 32 39 39 3b 2d 33 38 2e 35 37 34 37 39 34 32 31 37 38 36 39 32 37 30`
+- `2d 33 2e 37 34 32 33 39 39 39 34 33 31 38 35 38 36 31 3b 2d 33 38 2e 35 37 34 37 37 32 37 37 32 31 37 37 39 38 30`
+- `2d 33 2e 37 33 39 35 36 32 38 35 39 37 38 30 34 36 32 3b 2d 33 38 2e 35 37 32 34 38 30 37 36 33 39 32 31 37 39 30`
+- `2d 33 2e 37 33 39 34 35 35 37 39 39 38 34 39 34 38 33 3b 2d 33 38 2e 35 37 32 32 30 37 33 33 31 33 35 37 39 30`
+- `2d 33 2e 37 33 39 32 35 32 33 38 35 39 34 34 36 30 31 36 3b 2d 33 38 2e 35 37 31 38 37 37 36 30 33 38 35 34 33 37 30`
+- `2d 33 2e 37 33 38 39 36 38 36 37 36 39 39 38 34 36 38 3b 2d 33 38 2e 35 36 39 36 39 33 30 38 31 36 34 32 35 32 30`
+- `2d 33 2e 37 33 38 37 39 32 30 32 37 39 38 35 36 32 37 37 3b 2d 33 38 2e 35 36 39 36 38 37 37 32 30 32 31 39 36 39 30`

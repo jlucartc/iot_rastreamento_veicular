@@ -32,12 +32,12 @@ function checa_se_ha_eventos_de_saida_na_regiao(regiao,dispositivo){
 	.then(response => response.json())
 	.then(eventos => {
 		eventos.forEach(function(evento){
-			fetch('/recupera_estado_do_dispositivo_na_regiao',{method: 'POST',header:{'content-type':'application/json'},body: JSON.stringify({dispositivo: dispositivo, regiao_id: regiao.id})})
+			fetch('/recupera_estado_do_dispositivo_na_regiao',{method: 'POST',headers:{'content-type':'application/json'},body: JSON.stringify({dispositivo: dispositivo, regiao_id: regiao.id})})
 			.then(response => response.json())
 			.then(regioes_dispositivos => {
 				regioes_dispositivos.forEach(
 					function(regiao_dispositivo){
-						if(regiao_dispositivo.esta_em_regiao == true && evento.criterio_id == '2'){
+						if(regiao_dispositivo.esta_na_regiao == true && evento.criterio_id == '2'){
 							emite_mensagem_de_evento(evento,dispositivo,regiao)
 							atualiza_status_do_dispositivo_na_regiao(regiao,dispositivo,false)
 						}
@@ -64,12 +64,14 @@ function checa_se_ha_eventos_de_entrada_na_regiao(regiao,dispositivo){
 			fetch('/recupera_estado_do_dispositivo_na_regiao',{method: 'POST',headers:{'content-type':'application/json'},body: JSON.stringify({dispositivo: dispositivo, regiao_id: regiao.id})})
 			.then(response => response.json())
 			.then(regioes_dispositivos => {
-				regioes_dispositivos.forEach(function(regiao_dispositivo){
-					if(regiao_dispositivo.esta_em_regiao == false && evento.criterio_id == '1'){
-						emite_mensagem_de_evento(evento,dispositivo,regiao)
-						atualiza_status_do_dispositivo_na_regiao(regiao,dispositivo,true)
+				regioes_dispositivos.forEach(
+					function(regiao_dispositivo){
+						if(regiao_dispositivo.esta_na_regiao == false && evento.criterio_id == '1'){
+							emite_mensagem_de_evento(evento,dispositivo,regiao)
+							atualiza_status_do_dispositivo_na_regiao(regiao,dispositivo,true)
+						}
 					}
-				})
+				)
 
 				if(regioes_dispositivos.length == 0 && evento.criterio_id == '1'){
 					insere_status_do_dispositivo_na_regiao(regiao,dispositivo,true)
@@ -102,7 +104,7 @@ async function processa_mensagem(mensagem){
 }
 
 async function processa_mensagem_de_evento(mensagem){
-	alert(`Alerta de evento! Evento: ${mensagem.evento_nome}, Dispositivo: ${mensagem.dispositivo}, Regiao: ${mensagem.regiao_nome}, Data: ${mensagem.data}, Mensagem: ${mensagem.texto}`)
+	alert(`${mensagem.texto}`)
 }
 
 function busca_novas_mensagens(){

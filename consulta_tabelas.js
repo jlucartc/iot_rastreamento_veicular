@@ -30,14 +30,14 @@ async function executa_consulta(consulta,parametros){
 
 module.exports.carrega_dados_da_aplicacao = async function carrega_dados_da_aplicacao(dados){
 	dispositivos = await executa_consulta("select \"dispositivos\".dispositivo as \"dispositivo\",\"dispositivos_data\".data as \"data\",\"dispositivos_payload\".payload as \"payload\" from (select dispositivo from mensagens group by dispositivo) as \"dispositivos\" inner join (select dispositivo,max(data) as \"data\" from mensagens group by dispositivo) as \"dispositivos_data\" on \"dispositivos_data\".dispositivo = \"dispositivos\".dispositivo inner join (select * from mensagens) as \"dispositivos_payload\" on \"dispositivos_payload\".dispositivo = \"dispositivos_data\".dispositivo and \"dispositivos_payload\".data = \"dispositivos_data\".data")
-	regioes = await executa_consulta("SELECT regioes.nome,(center(regioes.circulo))[0] as \"latitude\",(center(regioes.circulo))[1] as \"longitude\" FROM regioes")
+	regioes = await executa_consulta("SELECT regioes.id,regioes.nome,(center(regioes.circulo))[0] as \"latitude\",(center(regioes.circulo))[1] as \"longitude\" FROM regioes")
 	registros = await executa_consulta("SELECT * FROM registros")
 	eventos = await executa_consulta("SELECT * FROM eventos")
 	return {dispositivos: dispositivos,regioes: regioes,registros: registros,eventos: eventos}
 }
 
 module.exports.atualiza_status_do_dispositivo_na_regiao = async function atualiza_status_do_dispositivo_na_regiao(dados){
-	consulta = "UPDATE regioes_dispositivos (esta_na_regiao) VALUES ($1) WHERE dispositivo = $2 AND regiao_id = $3"
+	consulta = "UPDATE regioes_dispositivos SET esta_na_regiao = $1 WHERE dispositivo = $2 AND regiao_id = $3"
 	parametros = [dados.esta_na_regiao,dados.dispositivo,dados.regiao_id]
 	resultado = await executa_consulta(consulta,parametros)
 	return resultado
@@ -81,7 +81,6 @@ module.exports.regioes_onde_o_dispositivo_esta_e_nao_estava = async function reg
 
 module.exports.regioes_onde_o_dispositivo_estava_e_nao_esta_mais = async function regioes_onde_o_dispositivo_estava_e_nao_esta_mais(dados){
 	consulta = "SELECT * FROM regioes WHERE regioes.id IN (SELECT regiao_id FROM regioes_dispositivos WHERE dispositivo = $1 and esta_na_regiao is true) and ST_IsEmpty(ST_Intersection(ST_Buffer(ST_Point((center(regioes.circulo))[0],(center(regioes.circulo))[1])::geography,radius(regioes.circulo)),ST_Point($2,$3))::geometry)"
-	console.log(dados)
 	parametros = [dados.dispositivo,dados.longitude,dados.latitude]
 	resultado = await executa_consulta(consulta,parametros)
 	return resultado

@@ -31,7 +31,7 @@ COMMENT ON EXTENSION postgis IS 'PostGIS geometry and geography spatial types an
 
 
 --
--- Name: notifica_pontos(); Type: FUNCTION; Schema: public; Owner: luca
+-- Name: notifica_pontos(); Type: FUNCTION; Schema: public; Owner: iot
 --
 
 CREATE FUNCTION public.notifica_pontos() RETURNS trigger
@@ -44,14 +44,14 @@ CREATE FUNCTION public.notifica_pontos() RETURNS trigger
 $$;
 
 
-ALTER FUNCTION public.notifica_pontos() OWNER TO luca;
+ALTER FUNCTION public.notifica_pontos() OWNER TO iot;
 
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
 
 --
--- Name: criterios; Type: TABLE; Schema: public; Owner: luca
+-- Name: criterios; Type: TABLE; Schema: public; Owner: iot
 --
 
 CREATE TABLE public.criterios (
@@ -60,10 +60,10 @@ CREATE TABLE public.criterios (
 );
 
 
-ALTER TABLE public.criterios OWNER TO luca;
+ALTER TABLE public.criterios OWNER TO iot;
 
 --
--- Name: criterios_id_seq; Type: SEQUENCE; Schema: public; Owner: luca
+-- Name: criterios_id_seq; Type: SEQUENCE; Schema: public; Owner: iot
 --
 
 CREATE SEQUENCE public.criterios_id_seq
@@ -74,17 +74,17 @@ CREATE SEQUENCE public.criterios_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.criterios_id_seq OWNER TO luca;
+ALTER TABLE public.criterios_id_seq OWNER TO iot;
 
 --
--- Name: criterios_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: luca
+-- Name: criterios_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: iot
 --
 
 ALTER SEQUENCE public.criterios_id_seq OWNED BY public.criterios.id;
 
 
 --
--- Name: eventos; Type: TABLE; Schema: public; Owner: luca
+-- Name: eventos; Type: TABLE; Schema: public; Owner: iot
 --
 
 CREATE TABLE public.eventos (
@@ -95,10 +95,10 @@ CREATE TABLE public.eventos (
 );
 
 
-ALTER TABLE public.eventos OWNER TO luca;
+ALTER TABLE public.eventos OWNER TO iot;
 
 --
--- Name: eventos_id_seq; Type: SEQUENCE; Schema: public; Owner: luca
+-- Name: eventos_id_seq; Type: SEQUENCE; Schema: public; Owner: iot
 --
 
 CREATE SEQUENCE public.eventos_id_seq
@@ -109,17 +109,17 @@ CREATE SEQUENCE public.eventos_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.eventos_id_seq OWNER TO luca;
+ALTER TABLE public.eventos_id_seq OWNER TO iot;
 
 --
--- Name: eventos_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: luca
+-- Name: eventos_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: iot
 --
 
 ALTER SEQUENCE public.eventos_id_seq OWNED BY public.eventos.id;
 
 
 --
--- Name: mensagens; Type: TABLE; Schema: public; Owner: luca
+-- Name: mensagens; Type: TABLE; Schema: public; Owner: iot
 --
 
 CREATE TABLE public.mensagens (
@@ -131,10 +131,10 @@ CREATE TABLE public.mensagens (
 );
 
 
-ALTER TABLE public.mensagens OWNER TO luca;
+ALTER TABLE public.mensagens OWNER TO iot;
 
 --
--- Name: mensagens_eventos; Type: TABLE; Schema: public; Owner: luca
+-- Name: mensagens_eventos; Type: TABLE; Schema: public; Owner: iot
 --
 
 CREATE TABLE public.mensagens_eventos (
@@ -146,10 +146,10 @@ CREATE TABLE public.mensagens_eventos (
 );
 
 
-ALTER TABLE public.mensagens_eventos OWNER TO luca;
+ALTER TABLE public.mensagens_eventos OWNER TO iot;
 
 --
--- Name: mensagens_eventos_id_seq; Type: SEQUENCE; Schema: public; Owner: luca
+-- Name: mensagens_eventos_id_seq; Type: SEQUENCE; Schema: public; Owner: iot
 --
 
 CREATE SEQUENCE public.mensagens_eventos_id_seq
@@ -160,17 +160,17 @@ CREATE SEQUENCE public.mensagens_eventos_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.mensagens_eventos_id_seq OWNER TO luca;
+ALTER TABLE public.mensagens_eventos_id_seq OWNER TO iot;
 
 --
--- Name: mensagens_eventos_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: luca
+-- Name: mensagens_eventos_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: iot
 --
 
 ALTER SEQUENCE public.mensagens_eventos_id_seq OWNED BY public.mensagens_eventos.id;
 
 
 --
--- Name: mensagens_id_seq; Type: SEQUENCE; Schema: public; Owner: luca
+-- Name: mensagens_id_seq; Type: SEQUENCE; Schema: public; Owner: iot
 --
 
 CREATE SEQUENCE public.mensagens_id_seq
@@ -181,17 +181,17 @@ CREATE SEQUENCE public.mensagens_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.mensagens_id_seq OWNER TO luca;
+ALTER TABLE public.mensagens_id_seq OWNER TO iot;
 
 --
--- Name: mensagens_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: luca
+-- Name: mensagens_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: iot
 --
 
 ALTER SEQUENCE public.mensagens_id_seq OWNED BY public.mensagens.id;
 
 
 --
--- Name: regioes; Type: TABLE; Schema: public; Owner: luca
+-- Name: regioes; Type: TABLE; Schema: public; Owner: iot
 --
 
 CREATE TABLE public.regioes (
@@ -201,10 +201,10 @@ CREATE TABLE public.regioes (
 );
 
 
-ALTER TABLE public.regioes OWNER TO luca;
+ALTER TABLE public.regioes OWNER TO iot;
 
 --
--- Name: regioes_dispositivos; Type: TABLE; Schema: public; Owner: luca
+-- Name: regioes_dispositivos; Type: TABLE; Schema: public; Owner: iot
 --
 
 CREATE TABLE public.regioes_dispositivos (
@@ -215,10 +215,10 @@ CREATE TABLE public.regioes_dispositivos (
 );
 
 
-ALTER TABLE public.regioes_dispositivos OWNER TO luca;
+ALTER TABLE public.regioes_dispositivos OWNER TO iot;
 
 --
--- Name: regioes_dispositivos_id_seq; Type: SEQUENCE; Schema: public; Owner: luca
+-- Name: regioes_dispositivos_id_seq; Type: SEQUENCE; Schema: public; Owner: iot
 --
 
 CREATE SEQUENCE public.regioes_dispositivos_id_seq
@@ -229,17 +229,17 @@ CREATE SEQUENCE public.regioes_dispositivos_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.regioes_dispositivos_id_seq OWNER TO luca;
+ALTER TABLE public.regioes_dispositivos_id_seq OWNER TO iot;
 
 --
--- Name: regioes_dispositivos_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: luca
+-- Name: regioes_dispositivos_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: iot
 --
 
 ALTER SEQUENCE public.regioes_dispositivos_id_seq OWNED BY public.regioes_dispositivos.id;
 
 
 --
--- Name: regioes_id_seq; Type: SEQUENCE; Schema: public; Owner: luca
+-- Name: regioes_id_seq; Type: SEQUENCE; Schema: public; Owner: iot
 --
 
 CREATE SEQUENCE public.regioes_id_seq
@@ -250,17 +250,17 @@ CREATE SEQUENCE public.regioes_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.regioes_id_seq OWNER TO luca;
+ALTER TABLE public.regioes_id_seq OWNER TO iot;
 
 --
--- Name: regioes_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: luca
+-- Name: regioes_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: iot
 --
 
 ALTER SEQUENCE public.regioes_id_seq OWNED BY public.regioes.id;
 
 
 --
--- Name: registros; Type: TABLE; Schema: public; Owner: luca
+-- Name: registros; Type: TABLE; Schema: public; Owner: iot
 --
 
 CREATE TABLE public.registros (
@@ -270,10 +270,10 @@ CREATE TABLE public.registros (
 );
 
 
-ALTER TABLE public.registros OWNER TO luca;
+ALTER TABLE public.registros OWNER TO iot;
 
 --
--- Name: registros_id_seq; Type: SEQUENCE; Schema: public; Owner: luca
+-- Name: registros_id_seq; Type: SEQUENCE; Schema: public; Owner: iot
 --
 
 CREATE SEQUENCE public.registros_id_seq
@@ -284,66 +284,66 @@ CREATE SEQUENCE public.registros_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.registros_id_seq OWNER TO luca;
+ALTER TABLE public.registros_id_seq OWNER TO iot;
 
 --
--- Name: registros_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: luca
+-- Name: registros_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: iot
 --
 
 ALTER SEQUENCE public.registros_id_seq OWNED BY public.registros.id;
 
 
 --
--- Name: criterios id; Type: DEFAULT; Schema: public; Owner: luca
+-- Name: criterios id; Type: DEFAULT; Schema: public; Owner: iot
 --
 
 ALTER TABLE ONLY public.criterios ALTER COLUMN id SET DEFAULT nextval('public.criterios_id_seq'::regclass);
 
 
 --
--- Name: eventos id; Type: DEFAULT; Schema: public; Owner: luca
+-- Name: eventos id; Type: DEFAULT; Schema: public; Owner: iot
 --
 
 ALTER TABLE ONLY public.eventos ALTER COLUMN id SET DEFAULT nextval('public.eventos_id_seq'::regclass);
 
 
 --
--- Name: mensagens id; Type: DEFAULT; Schema: public; Owner: luca
+-- Name: mensagens id; Type: DEFAULT; Schema: public; Owner: iot
 --
 
 ALTER TABLE ONLY public.mensagens ALTER COLUMN id SET DEFAULT nextval('public.mensagens_id_seq'::regclass);
 
 
 --
--- Name: mensagens_eventos id; Type: DEFAULT; Schema: public; Owner: luca
+-- Name: mensagens_eventos id; Type: DEFAULT; Schema: public; Owner: iot
 --
 
 ALTER TABLE ONLY public.mensagens_eventos ALTER COLUMN id SET DEFAULT nextval('public.mensagens_eventos_id_seq'::regclass);
 
 
 --
--- Name: regioes id; Type: DEFAULT; Schema: public; Owner: luca
+-- Name: regioes id; Type: DEFAULT; Schema: public; Owner: iot
 --
 
 ALTER TABLE ONLY public.regioes ALTER COLUMN id SET DEFAULT nextval('public.regioes_id_seq'::regclass);
 
 
 --
--- Name: regioes_dispositivos id; Type: DEFAULT; Schema: public; Owner: luca
+-- Name: regioes_dispositivos id; Type: DEFAULT; Schema: public; Owner: iot
 --
 
 ALTER TABLE ONLY public.regioes_dispositivos ALTER COLUMN id SET DEFAULT nextval('public.regioes_dispositivos_id_seq'::regclass);
 
 
 --
--- Name: registros id; Type: DEFAULT; Schema: public; Owner: luca
+-- Name: registros id; Type: DEFAULT; Schema: public; Owner: iot
 --
 
 ALTER TABLE ONLY public.registros ALTER COLUMN id SET DEFAULT nextval('public.registros_id_seq'::regclass);
 
 
 --
--- Data for Name: criterios; Type: TABLE DATA; Schema: public; Owner: luca
+-- Data for Name: criterios; Type: TABLE DATA; Schema: public; Owner: iot
 --
 
 COPY public.criterios (id, nome) FROM stdin;
@@ -353,26 +353,81 @@ COPY public.criterios (id, nome) FROM stdin;
 
 
 --
--- Data for Name: eventos; Type: TABLE DATA; Schema: public; Owner: luca
+-- Data for Name: eventos; Type: TABLE DATA; Schema: public; Owner: iot
 --
 
 COPY public.eventos (id, nome, texto, criterio_id) FROM stdin;
-1	Entrou nos blocos de pesquisa	Dispositivo está proximo aos blocos de pesquisa	1
-2	Saiu dos blocos de pesquisa	Veículo se afastou dos blocos de pesquisa	2
-3	Entrou nos fundos do GREaT	Veículo está proximo aos fundos do GREaT	1
-4	Saiu dos fundos do GREaT	Veículo se afastou dos fundos do GREaT	2
-5	Entrou no restaurante universitário	Veículo está próximo do restaurante universitário	1
-6	Saiu do restaurante universitário	Veículo se afastou do restaurante universitário	2
-7	Entrou no estacionamento da Química	Veículo entrou no estacionamento da Química	1
-8	Saiu do estacionamento da Química	Veículo se afastou do estacionamento da Química	2
+13	Chegou na parada da HM	Veículo chegou na parada da HM	1
+14	Saiu da parada da HM	Veículo saiu da parada da HM	2
+15	Chegou na parada antes do açude	Veículo chegou na parada antes do açude	1
+16	Saiu da parada antes do açude	Veículo saiu da parada antes do açude	2
+17	Chegou na parada da Fitotecnia	Veículo chegou na parada da Fitotecnia	1
+18	Saiu da parada da Fitotecnia	Veículo saiu da parada da Fitotecnia	2
+19	Chegou na parada do STI	Veículo chegou na parada do STI	1
+20	Saiu da parada do STI	Veículo saiu da parada do STI	2
+21	Chegou na parada do RU novo	Veículo chegou na parada do RU novo	1
+22	Saiu da parada do RU novo	Veículo saiu da parada do RU novo	2
+23	Chegou na parada do IEFES	Veículo chegou na parada do IEFES	1
+24	Saiu da parada do IEFES	Veículo saiu da parada do IEFES	2
+25	Chegou na parada da Matemática	Veículo chegou na parada da Matemática	1
+26	Saiu da parada da Matemática	Veículo saiu da parada da Matemática	2
+27	Chegou no RU Velho	Veículo chegou na parada do RU Velho	1
+28	Saiu da parada do RU velho	Veículo saiu da parada do RU velho	2
+29	Chegou na parada da biblioteca	Veículo chegou na parada da biblioteca	1
+30	Saiu da parada da biblioteca	Veículo saiu da parada da biblioteca	2
+31	Chegou na parada depois do açude	Veículo chegou na parada depois do açude	1
+32	Saiu da parada depois do açude	Veículo saiu da parada depois do açude	2
 \.
 
 
 --
--- Data for Name: mensagens; Type: TABLE DATA; Schema: public; Owner: luca
+-- Data for Name: mensagens; Type: TABLE DATA; Schema: public; Owner: iot
 --
 
 COPY public.mensagens (id, aplicacao, dispositivo, payload, data) FROM stdin;
+445	greatway-test	DF25028029C5DCC8	LTMuNzM4OTE3ODIzNDk4NDE4NjstMzguNTY5NDUwODI5Nzc5MzUwCg==	2021-03-30 20:30:06.215647-03
+450	greatway-test	DF25028029C5DCC8	LTMuNzM4ODIxNDY5NDkwMjQyNDstMzguNTY5NjMwNDM3NDQzODcw	2021-03-30 20:37:52.650777-03
+451	greatway-test	DF25028029C5DCC8	LTMuNzM4NTU5MTcyNDE0MzMwODstMzguNTY5NzAyODE2NjUxOTU0MA==	2021-03-30 20:38:29.067141-03
+452	greatway-test	DF25028029C5DCC8	LTMuNzM4ODIxNDY5NDkwMjQyNDstMzguNTY5NjMwNDM3NDQzODcw	2021-03-30 20:42:33.098017-03
+453	greatway-test	DF25028029C5DCC8	LTMuNzM4NTU5MTcyNDE0MzMwODstMzguNTY5NzAyODE2NjUxOTU0MA==	2021-03-30 20:43:08.887894-03
+454	greatway-test	DF25028029C5DCC8	LTMuNzM4ODIxNDY5NDkwMjQyNDstMzguNTY5NjMwNDM3NDQzODcw	2021-03-30 20:58:55.722884-03
+455	greatway-test	DF25028029C5DCC8	LTMuNzM4NTU5MTcyNDE0MzMwODstMzguNTY5NzAyODE2NjUxOTU0MA==	2021-03-30 20:59:29.3532-03
+456	greatway-test	DF25028029C5DCC8	LTMuNzM4OTE3ODIzNDk4NDE4NjstMzguNTY5NDUwODI5Nzc5MzUwCg==	2021-03-30 21:01:52.71055-03
+457	greatway-test	DF25028029C5DCC8	LTMuNzM4ODIxNDY5NDkwMjQyNDstMzguNTY5NjMwNDM3NDQzODcw	2021-03-30 21:03:29.846436-03
+458	greatway-test	DF25028029C5DCC8	LTMuNzM4NTU5MTcyNDE0MzMwODstMzguNTY5NzAyODE2NjUxOTU0MC0zLjczODgyMTQ2OTQ5MDI0MjQ7LTM4LjU2OTYzMDQzNzQ0Mzg3MA==	2021-03-30 21:04:03.655195-03
+459	greatway-test	DF25028029C5DCC8	LTMuNzM4OTE3ODIzNDk4NDE4NjstMzguNTY5NDUwODI5Nzc5MzUwCg==	2021-03-30 21:06:36.483482-03
+460	greatway-test	DF25028029C5DCC8	LTMuNzM4ODIxNDY5NDkwMjQyNDstMzguNTY5NjMwNDM3NDQzODcw	2021-03-30 21:07:12.385648-03
+461	greatway-test	DF25028029C5DCC8	LTMuNzM4ODIxNDY5NDkwMjQyNDstMzguNTY5NjMwNDM3NDQzODcw	2021-03-30 21:10:31.711012-03
+462	greatway-test	DF25028029C5DCC8	LTMuNzM4NTU5MTcyNDE0MzMwODstMzguNTY5NzAyODE2NjUxOTU0MA==	2021-03-30 21:11:03.604181-03
+463	greatway-test	DF25028029C5DCC8	LTMuNzM5MjY4NDQ0OTM4ODE0NzstMzguNTcyMjI4MDQ2ODAwODgw	2021-03-30 21:11:49.085215-03
+464	greatway-test	DF25028029C5DCC8	LTMuNzM5MzMyNjgwOTEyNzAxNDstMzguNTcyMzY3NDQzNzk0MjU2MA==	2021-03-30 21:12:08.447965-03
+465	greatway-test	DF25028029C5DCC8	LTMuNzM5NTg0MjcxNzY1MDgyNzstMzguNTcyNjU2OTYwNjI2NjIw	2021-03-30 21:12:41.097548-03
+466	greatway-test	DF25028029C5DCC8	LTMuNzQyMzQzNzM2OTA1NzE1NTstMzguNTc0ODk2NjUzOTkyNDU0MA==	2021-03-30 21:13:15.520121-03
+467	greatway-test	DF25028029C5DCC8	LTMuNzQyNTM5MTIwNjI1OTY5Oy0zOC41NzQ5NTAyNjgyMjA2NjA=	2021-03-30 21:13:46.323542-03
+468	greatway-test	DF25028029C5DCC8	LTMuNzQyOTIxODU4NDcyMjIzOy0zOC41NzQ5MjA3ODAzOTUxNDA=	2021-03-30 21:14:27.936162-03
+469	greatway-test	DF25028029C5DCC8	LTMuNzQ0OTk2MTM0MDk5NTgyNTstMzguNTc2MTAwNDc3NjIxMTkw	2021-03-30 21:15:19.788791-03
+470	greatway-test	DF25028029C5DCC8	LTMuNzQ1MDI4MjUxODc3MTEyOy0zOC41NzYzNzY1OTA4OTY0OTA=	2021-03-30 21:15:51.859803-03
+471	greatway-test	DF25028029C5DCC8	LTMuNzQ1MjQyMzcwMzYzODQ4NzstMzguNTc2Nzc5MzU4MDUxNTQw	2021-03-30 21:16:52.982534-03
+472	greatway-test	DF25028029C5DCC8	LTMuNzQ2NzU3MjU3MTYxMTM4Oy0zOC41Nzc3OTA3MDgwOTg2MA==	2021-03-30 21:17:46.19457-03
+473	greatway-test	DF25028029C5DCC8	LTMuNzQ2OTM5MjU3NTE4NjE0Oy0zOC41Nzc2OTk1NjM5MTA2MTA=	2021-03-30 21:18:07.897113-03
+474	greatway-test	DF25028029C5DCC8	LTMuNzQ3MjMwOTkzMzA2NzY1MzstMzguNTc3NTAzODcxOTc3NjMw	2021-03-30 21:18:48.580684-03
+475	greatway-test	DF25028029C5DCC8	LTMuNzQ3OTU2MzE3NjQyODAyNjstMzguNTc2MzUxMTY2MDcxMDE0MA==	2021-03-30 21:20:05.201938-03
+476	greatway-test	DF25028029C5DCC8	LTMuNzQ3ODg5NDA1ODI4ODc0Oy0zOC41NzYwMzQ4NDIxMjQ1MzUw	2021-03-30 21:20:31.036678-03
+477	greatway-test	DF25028029C5DCC8	LTMuNzQ3Nzc0MzE3NDk2OTM1Oy0zOC41NzU3MTA0NzYwNDM4NDA=	2021-03-30 21:20:59.315661-03
+478	greatway-test	DF25028029C5DCC8	LTMuNzQ3MTEzMjI4NDEzMTY4Oy0zOC41NzM2NzMxMzUzNzE2NzA=	2021-03-30 21:21:27.311714-03
+479	greatway-test	DF25028029C5DCC8	LTMuNzQ3MDQ2MzE2NTM0NzUwNTstMzguNTczNDU1OTk3NzQ3Mzkw	2021-03-30 21:21:45.054738-03
+480	greatway-test	DF25028029C5DCC8	LTMuNzQ2OTIzMTk4NjY1MDcwNDstMzguNTczMDQ1ODQ4OTAxNTYw	2021-03-30 21:22:19.764143-03
+481	greatway-test	DF25028029C5DCC8	LTMuNzQ1MzI1MzQxMjYzMzg2NzstMzguNTcyOTQzOTgxODY3OTYw	2021-03-30 21:22:55.828158-03
+482	greatway-test	DF25028029C5DCC8	LTMuNzQ1MTA1ODY5ODM0NTk5Oy0zOC41NzMwNTM4OTEwMzU3ODA=	2021-03-30 21:23:23.627189-03
+483	greatway-test	DF25028029C5DCC8	LTMuNzQ0OTI2NTQ1NTc3NTYzOy0zOC41NzMzMTkyODE0NjU0NTA=	2021-03-30 21:24:28.449709-03
+484	greatway-test	DF25028029C5DCC8	LTMuNzQzMDE4MjEyMDI5NTM2ODstMzguNTc0ODA0OTQwNzE0OTEw	2021-03-30 21:24:48.605182-03
+485	greatway-test	DF25028029C5DCC8	LTMuNzQyODI1NTA0OTA0Mjk5Oy0zOC41NzQ3OTQyMTc4NjkyNzA=	2021-03-30 21:25:23.841206-03
+486	greatway-test	DF25028029C5DCC8	LTMuNzQyMzk5OTQzMTg1ODYxOy0zOC41NzQ3NzI3NzIxNzc5ODA=	2021-03-30 21:25:50.709644-03
+487	greatway-test	DF25028029C5DCC8	LTMuNzM5NTYyODU5NzgwNDYyOy0zOC41NzI0ODA3NjM5MjE3OTA=	2021-03-30 21:26:18.134197-03
+488	greatway-test	DF25028029C5DCC8	LTMuNzM5NDU1Nzk5ODQ5NDgzOy0zOC41NzIyMDczMzEzNTc5MA==	2021-03-30 21:26:41.187275-03
+489	greatway-test	DF25028029C5DCC8	LTMuNzM5MjUyMzg1OTQ0NjAxNjstMzguNTcxODc3NjAzODU0Mzcw	2021-03-30 21:27:17.614724-03
+490	greatway-test	DF25028029C5DCC8	LTMuNzM4OTY4Njc2OTk4NDY4Oy0zOC41Njk2OTMwODE2NDI1MjA=	2021-03-30 21:28:36.288277-03
+491	greatway-test	DF25028029C5DCC8	LTMuNzM4NzkyMDI3OTg1NjI3NzstMzguNTY5Njg3NzIwMjE5Njkw	2021-03-30 21:28:54.016625-03
 1	greatway-test	DF25028029C5DCC8	IC0zLjc0NjMwNzsgLTM4LjU3ODA1OQA=	2021-02-25 20:46:57.403949-03
 2	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQxMTsgLTM4LjU3ODIxMwA=	2021-02-25 20:47:30.355141-03
 3	greatway-test	DF25028029C5DCC8	IC0zLjc0NjQzMjsgLTM4LjU3ODE4MAA=	2021-02-25 20:48:02.990211-03
@@ -422,7 +477,6 @@ COPY public.mensagens (id, aplicacao, dispositivo, payload, data) FROM stdin;
 47	greatway-test	DF25028029C5DCC8	IC0zLjc0NjM3NjsgLTM4LjU3ODIyMwA=	2021-02-25 21:17:07.909169-03
 48	greatway-test	DF25028029C5DCC8	IC0zLjc0NjM3NjsgLTM4LjU3ODIyMwA=	2021-02-25 21:17:28.784372-03
 49	greatway-test	DF25028029C5DCC8	IC0zLjc0NjM3NjsgLTM4LjU3ODIyMwA=	2021-02-25 21:18:04.964885-03
-50	greatway-test	DF25028029C5DCC8	IC0zLjc0Njc0ODsgLTM4LjU3ODI2OQA=	2021-02-25 21:18:34.912059-03
 51	greatway-test	DF25028029C5DCC8	IC0zLjc0NjUwMDsgLTM4LjU3ODI1MAA=	2021-02-25 21:19:01.190019-03
 52	greatway-test	DF25028029C5DCC8	IC0zLjc0NjcxMDsgLTM4LjU3ODI3NgA=	2021-02-25 21:19:26.375572-03
 53	greatway-test	DF25028029C5DCC8	IC0zLjc0NjcxMDsgLTM4LjU3ODI3NgA=	2021-02-25 21:19:51.21533-03
@@ -633,51 +687,106 @@ COPY public.mensagens (id, aplicacao, dispositivo, payload, data) FROM stdin;
 
 
 --
--- Data for Name: mensagens_eventos; Type: TABLE DATA; Schema: public; Owner: luca
+-- Data for Name: mensagens_eventos; Type: TABLE DATA; Schema: public; Owner: iot
 --
 
 COPY public.mensagens_eventos (id, evento_id, regiao_id, dispositivo, data) FROM stdin;
+14	13	7	DF25028029C5DCC8	2021-03-30 23:30:31.38
+15	14	7	DF25028029C5DCC8	2021-03-30 23:31:11.265
+16	14	7	DF25028029C5DCC8	2021-03-30 23:33:27.274
+17	13	7	DF25028029C5DCC8	2021-03-30 23:37:55.376
+18	13	7	DF25028029C5DCC8	2021-03-31 00:03:38.631
+19	14	7	DF25028029C5DCC8	2021-03-31 00:04:08.564
+20	13	7	DF25028029C5DCC8	2021-03-31 00:07:15.366
+21	14	7	DF25028029C5DCC8	2021-03-31 00:11:12.274
+22	15	8	DF25028029C5DCC8	2021-03-31 00:12:12.354
+23	16	8	DF25028029C5DCC8	2021-03-31 00:12:42.361
+24	17	9	DF25028029C5DCC8	2021-03-31 00:13:53.359
+25	18	9	DF25028029C5DCC8	2021-03-31 00:14:34.266
+26	19	10	DF25028029C5DCC8	2021-03-31 00:15:58.341
+27	20	10	DF25028029C5DCC8	2021-03-31 00:16:58.277
+28	21	11	DF25028029C5DCC8	2021-03-31 00:18:16.336
+29	22	11	DF25028029C5DCC8	2021-03-31 00:18:57.274
+30	23	12	DF25028029C5DCC8	2021-03-31 00:20:32.242
+31	24	12	DF25028029C5DCC8	2021-03-31 00:21:02.167
+32	25	13	DF25028029C5DCC8	2021-03-31 00:21:52.252
+33	26	13	DF25028029C5DCC8	2021-03-31 00:22:22.16
+34	27	14	DF25028029C5DCC8	2021-03-31 00:23:32.36
+35	28	14	DF25028029C5DCC8	2021-03-31 00:24:32.273
+36	29	15	DF25028029C5DCC8	2021-03-31 00:25:24.349
+37	30	15	DF25028029C5DCC8	2021-03-31 00:25:55.269
+38	31	16	DF25028029C5DCC8	2021-03-31 00:26:45.354
+39	32	16	DF25028029C5DCC8	2021-03-31 00:27:26.265
+40	13	7	DF25028029C5DCC8	2021-03-31 00:29:00.397
 \.
 
 
 --
--- Data for Name: regioes; Type: TABLE DATA; Schema: public; Owner: luca
+-- Data for Name: regioes; Type: TABLE DATA; Schema: public; Owner: iot
 --
 
 COPY public.regioes (id, nome, circulo) FROM stdin;
-1	Fundos do GREaT	<(-38.57945948839188,-3.7470463165347505),100>
-2	Blocos de pesquisa	<(-38.578807711601264,-3.745352106068001),100>
-3	Restaurante Universitário	<(-38.578040599823,-3.7471881697109337),50>
-4	Estacionamento da Química	<(-38.577294945716865,-3.7465029918924455),50>
+8	Parada antes do açude	<(-38.57244890740537,-3.7393540929029454),15>
+9	Parada Fitotecnia	<(-38.57495383812688,-3.742584620938123),15>
+10	Parada STI	<(-38.57639699141811,-3.745038957802688),15>
+11	Parada RU novo	<(-38.57771916605356,-3.746949963420819),15>
+12	Parada IEFES	<(-38.57600493459252,-3.7479161705550563),15>
+13	Parada Matemática	<(-38.57340810195667,-3.7471051989880184),15>
+14	Parada RU Velho	<(-38.57303252698869,-3.7450951639098373),15>
+15	Parada Biblioteca	<(-38.57470977306366,-3.7428228284161498),15>
+16	Parada após açude	<(-38.57219087608218,-3.73949594732513),15>
+7	Parada HM	<(-38.56965628008204,-3.738783998484196),15>
 \.
 
 
 --
--- Data for Name: regioes_dispositivos; Type: TABLE DATA; Schema: public; Owner: luca
+-- Data for Name: regioes_dispositivos; Type: TABLE DATA; Schema: public; Owner: iot
 --
 
 COPY public.regioes_dispositivos (id, regiao_id, dispositivo, esta_na_regiao) FROM stdin;
+23	8	DF25028029C5DCC8	f
+24	9	DF25028029C5DCC8	f
+25	10	DF25028029C5DCC8	f
+26	11	DF25028029C5DCC8	f
+27	12	DF25028029C5DCC8	f
+28	13	DF25028029C5DCC8	f
+29	14	DF25028029C5DCC8	f
+30	15	DF25028029C5DCC8	f
+31	16	DF25028029C5DCC8	f
+22	7	DF25028029C5DCC8	t
 \.
 
 
 --
--- Data for Name: registros; Type: TABLE DATA; Schema: public; Owner: luca
+-- Data for Name: registros; Type: TABLE DATA; Schema: public; Owner: iot
 --
 
 COPY public.registros (id, evento_id, regiao_id) FROM stdin;
-1	3	1
-2	4	1
-3	2	2
-4	1	2
-5	5	3
-6	6	3
-7	7	4
-8	8	4
+10	13	7
+11	14	7
+12	15	8
+13	16	8
+14	17	9
+15	18	9
+16	19	10
+17	20	10
+18	21	11
+19	22	11
+20	23	12
+21	24	12
+22	25	13
+23	26	13
+24	27	14
+25	28	14
+26	29	15
+27	30	15
+28	31	16
+29	32	16
 \.
 
 
 --
--- Data for Name: spatial_ref_sys; Type: TABLE DATA; Schema: public; Owner: luca
+-- Data for Name: spatial_ref_sys; Type: TABLE DATA; Schema: public; Owner: iot
 --
 
 COPY public.spatial_ref_sys (srid, auth_name, auth_srid, srtext, proj4text) FROM stdin;
@@ -685,56 +794,56 @@ COPY public.spatial_ref_sys (srid, auth_name, auth_srid, srtext, proj4text) FROM
 
 
 --
--- Name: criterios_id_seq; Type: SEQUENCE SET; Schema: public; Owner: luca
+-- Name: criterios_id_seq; Type: SEQUENCE SET; Schema: public; Owner: iot
 --
 
 SELECT pg_catalog.setval('public.criterios_id_seq', 2, true);
 
 
 --
--- Name: eventos_id_seq; Type: SEQUENCE SET; Schema: public; Owner: luca
+-- Name: eventos_id_seq; Type: SEQUENCE SET; Schema: public; Owner: iot
 --
 
-SELECT pg_catalog.setval('public.eventos_id_seq', 12, true);
-
-
---
--- Name: mensagens_eventos_id_seq; Type: SEQUENCE SET; Schema: public; Owner: luca
---
-
-SELECT pg_catalog.setval('public.mensagens_eventos_id_seq', 7, true);
+SELECT pg_catalog.setval('public.eventos_id_seq', 32, true);
 
 
 --
--- Name: mensagens_id_seq; Type: SEQUENCE SET; Schema: public; Owner: luca
+-- Name: mensagens_eventos_id_seq; Type: SEQUENCE SET; Schema: public; Owner: iot
 --
 
-SELECT pg_catalog.setval('public.mensagens_id_seq', 434, true);
-
-
---
--- Name: regioes_dispositivos_id_seq; Type: SEQUENCE SET; Schema: public; Owner: luca
---
-
-SELECT pg_catalog.setval('public.regioes_dispositivos_id_seq', 10, true);
+SELECT pg_catalog.setval('public.mensagens_eventos_id_seq', 40, true);
 
 
 --
--- Name: regioes_id_seq; Type: SEQUENCE SET; Schema: public; Owner: luca
+-- Name: mensagens_id_seq; Type: SEQUENCE SET; Schema: public; Owner: iot
 --
 
-SELECT pg_catalog.setval('public.regioes_id_seq', 5, true);
-
-
---
--- Name: registros_id_seq; Type: SEQUENCE SET; Schema: public; Owner: luca
---
-
-SELECT pg_catalog.setval('public.registros_id_seq', 9, true);
+SELECT pg_catalog.setval('public.mensagens_id_seq', 491, true);
 
 
 --
--- Name: criterios criterios_id_key; Type: CONSTRAINT; Schema: public; Owner: luca
+-- Name: regioes_dispositivos_id_seq; Type: SEQUENCE SET; Schema: public; Owner: iot
+--
+
+SELECT pg_catalog.setval('public.regioes_dispositivos_id_seq', 31, true);
+
+
+--
+-- Name: regioes_id_seq; Type: SEQUENCE SET; Schema: public; Owner: iot
+--
+
+SELECT pg_catalog.setval('public.regioes_id_seq', 16, true);
+
+
+--
+-- Name: registros_id_seq; Type: SEQUENCE SET; Schema: public; Owner: iot
+--
+
+SELECT pg_catalog.setval('public.registros_id_seq', 29, true);
+
+
+--
+-- Name: criterios criterios_id_key; Type: CONSTRAINT; Schema: public; Owner: iot
 --
 
 ALTER TABLE ONLY public.criterios
@@ -742,7 +851,7 @@ ALTER TABLE ONLY public.criterios
 
 
 --
--- Name: criterios criterios_pkey; Type: CONSTRAINT; Schema: public; Owner: luca
+-- Name: criterios criterios_pkey; Type: CONSTRAINT; Schema: public; Owner: iot
 --
 
 ALTER TABLE ONLY public.criterios
@@ -750,7 +859,7 @@ ALTER TABLE ONLY public.criterios
 
 
 --
--- Name: eventos eventos_id_key; Type: CONSTRAINT; Schema: public; Owner: luca
+-- Name: eventos eventos_id_key; Type: CONSTRAINT; Schema: public; Owner: iot
 --
 
 ALTER TABLE ONLY public.eventos
@@ -758,7 +867,7 @@ ALTER TABLE ONLY public.eventos
 
 
 --
--- Name: eventos eventos_pkey; Type: CONSTRAINT; Schema: public; Owner: luca
+-- Name: eventos eventos_pkey; Type: CONSTRAINT; Schema: public; Owner: iot
 --
 
 ALTER TABLE ONLY public.eventos
@@ -766,7 +875,7 @@ ALTER TABLE ONLY public.eventos
 
 
 --
--- Name: mensagens_eventos mensagens_eventos_id_key; Type: CONSTRAINT; Schema: public; Owner: luca
+-- Name: mensagens_eventos mensagens_eventos_id_key; Type: CONSTRAINT; Schema: public; Owner: iot
 --
 
 ALTER TABLE ONLY public.mensagens_eventos
@@ -774,7 +883,7 @@ ALTER TABLE ONLY public.mensagens_eventos
 
 
 --
--- Name: mensagens_eventos mensagens_eventos_pkey; Type: CONSTRAINT; Schema: public; Owner: luca
+-- Name: mensagens_eventos mensagens_eventos_pkey; Type: CONSTRAINT; Schema: public; Owner: iot
 --
 
 ALTER TABLE ONLY public.mensagens_eventos
@@ -782,7 +891,7 @@ ALTER TABLE ONLY public.mensagens_eventos
 
 
 --
--- Name: mensagens mensagens_id_key; Type: CONSTRAINT; Schema: public; Owner: luca
+-- Name: mensagens mensagens_id_key; Type: CONSTRAINT; Schema: public; Owner: iot
 --
 
 ALTER TABLE ONLY public.mensagens
@@ -790,7 +899,7 @@ ALTER TABLE ONLY public.mensagens
 
 
 --
--- Name: mensagens mensagens_pkey; Type: CONSTRAINT; Schema: public; Owner: luca
+-- Name: mensagens mensagens_pkey; Type: CONSTRAINT; Schema: public; Owner: iot
 --
 
 ALTER TABLE ONLY public.mensagens
@@ -798,7 +907,7 @@ ALTER TABLE ONLY public.mensagens
 
 
 --
--- Name: regioes_dispositivos regioes_dispositivos_id_key; Type: CONSTRAINT; Schema: public; Owner: luca
+-- Name: regioes_dispositivos regioes_dispositivos_id_key; Type: CONSTRAINT; Schema: public; Owner: iot
 --
 
 ALTER TABLE ONLY public.regioes_dispositivos
@@ -806,7 +915,7 @@ ALTER TABLE ONLY public.regioes_dispositivos
 
 
 --
--- Name: regioes_dispositivos regioes_dispositivos_pkey; Type: CONSTRAINT; Schema: public; Owner: luca
+-- Name: regioes_dispositivos regioes_dispositivos_pkey; Type: CONSTRAINT; Schema: public; Owner: iot
 --
 
 ALTER TABLE ONLY public.regioes_dispositivos
@@ -814,7 +923,7 @@ ALTER TABLE ONLY public.regioes_dispositivos
 
 
 --
--- Name: regioes regioes_id_key; Type: CONSTRAINT; Schema: public; Owner: luca
+-- Name: regioes regioes_id_key; Type: CONSTRAINT; Schema: public; Owner: iot
 --
 
 ALTER TABLE ONLY public.regioes
@@ -822,7 +931,7 @@ ALTER TABLE ONLY public.regioes
 
 
 --
--- Name: regioes regioes_pkey; Type: CONSTRAINT; Schema: public; Owner: luca
+-- Name: regioes regioes_pkey; Type: CONSTRAINT; Schema: public; Owner: iot
 --
 
 ALTER TABLE ONLY public.regioes
@@ -830,7 +939,7 @@ ALTER TABLE ONLY public.regioes
 
 
 --
--- Name: registros registros_id_key; Type: CONSTRAINT; Schema: public; Owner: luca
+-- Name: registros registros_id_key; Type: CONSTRAINT; Schema: public; Owner: iot
 --
 
 ALTER TABLE ONLY public.registros
@@ -838,7 +947,7 @@ ALTER TABLE ONLY public.registros
 
 
 --
--- Name: registros registros_pkey; Type: CONSTRAINT; Schema: public; Owner: luca
+-- Name: registros registros_pkey; Type: CONSTRAINT; Schema: public; Owner: iot
 --
 
 ALTER TABLE ONLY public.registros
@@ -846,7 +955,7 @@ ALTER TABLE ONLY public.registros
 
 
 --
--- Name: mensagens alerta_novo_ponto; Type: TRIGGER; Schema: public; Owner: luca
+-- Name: mensagens alerta_novo_ponto; Type: TRIGGER; Schema: public; Owner: iot
 --
 
 CREATE TRIGGER alerta_novo_ponto AFTER INSERT ON public.mensagens FOR EACH STATEMENT EXECUTE FUNCTION public.notifica_pontos();
